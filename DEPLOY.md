@@ -65,7 +65,7 @@
 
 - **第一次部署**：可以先不填，或填 `https://你的项目.vercel.app`（部署完成后 Vercel 会显示实际域名）。
 - **部署完成后**：到 Vercel 项目 → **Settings** → **Environment Variables**，把 `NEXT_PUBLIC_SITE_URL` 设为你的访问地址，例如：
-  - 用 Vercel 域名：`https://1039-quote-radar-xxx.vercel.app`
+  - 用 Vercel 默认域名：`https://1039-quote-radar.vercel.app`
   - 若已绑域名：`https://你的域名.com`
 - 改完后在 **Deployments** 里对最新部署点 **Redeploy**，这样仪表盘里「复制链接」才是正确公网链接。
 
@@ -89,7 +89,7 @@
 
 ### 访问地址（用户怎么打开）
 
-- **部署完成后**：在 Vercel 项目页 → **Domains** 里看到的地址就是站点入口，例如 `https://1039-quote-radar-xxxx.vercel.app`。
+- **部署完成后**：在 Vercel 项目页 → **Domains** 里看到的地址就是站点入口，例如 `https://1039-quote-radar.vercel.app`。
 - **若绑了自定义域名**：用户访问你配置的域名即可（如 `https://quote.你的品牌.com`）。
 - 本站是**网页应用**，没有上架应用商店，用户通过**链接**访问（你分享链接、发二维码或写在宣传材料里）。
 
