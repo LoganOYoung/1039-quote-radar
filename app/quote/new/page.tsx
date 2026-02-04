@@ -321,7 +321,10 @@ export default function QuoteNewPage() {
           <Link href="/" className="p-1 -m-1 text-slate-500 hover:text-slate-900 min-h-[44px] min-w-[44px] flex items-center justify-center">
             <Radar className="w-8 h-8 text-emerald-600" aria-hidden />
           </Link>
-          <h1 className="text-lg sm:text-xl font-bold truncate text-slate-900">生成报价链接</h1>
+          <div className="min-w-0">
+            <h1 className="text-lg sm:text-xl font-bold truncate text-slate-900">生成报价链接</h1>
+            <p className="text-xs text-slate-500 mt-0.5">1 分钟发出第一条链接 · 填产品名+出厂价即可，支持粘贴自动识别</p>
+          </div>
         </header>
 
         {/* 移动端：进度点 */}

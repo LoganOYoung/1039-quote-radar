@@ -9,6 +9,7 @@ import {
   BarChart3,
   type LucideIcon,
 } from "lucide-react";
+import { getMerchantCount } from "@/lib/merchant-count";
 
 const valueItems: { icon: LucideIcon; title: string; desc: string }[] = [
   {
@@ -62,8 +63,11 @@ export default function HomePage() {
                 1039报价雷达
               </h1>
             </div>
-            <p className="text-slate-600 text-base sm:text-lg max-w-md mb-4 sm:mb-8 leading-relaxed">
-              专业报价链接，客户一点开你都知道
+            <p className="text-slate-600 text-base sm:text-lg max-w-md mb-3 leading-relaxed">
+              发报价链接，客户一点开你马上知道，还能锁汇率、控查看
+            </p>
+            <p className="text-slate-500 text-sm mb-4 sm:mb-6">
+              已有 {getMerchantCount()} 位商户在用 · 限时邀请中
             </p>
           </section>
 
@@ -98,7 +102,7 @@ export default function HomePage() {
             </Link>
           </div>
           <p className="text-slate-400 text-xs mt-4 pb-6 hidden sm:block">
-            支持「添加到主屏幕」，像 App 一样使用
+            专注服务义乌 1039 商户 · 支持「添加到主屏幕」，像 App 一样使用
           </p>
         </div>
       </main>
