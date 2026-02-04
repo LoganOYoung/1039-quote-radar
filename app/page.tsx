@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Radar, FileText, LayoutDashboard, Lock, TrendingUp, Shield, ArrowRight } from "lucide-react";
+import { Radar, FileText, Lock, TrendingUp, Shield } from "lucide-react";
 
 export default function HomePage() {
   return (
@@ -55,22 +55,14 @@ export default function HomePage() {
           ))}
         </ul>
 
-        {/* CTA */}
-        <div className="w-full flex flex-col gap-3 sm:flex-row sm:justify-center sm:gap-4">
+        {/* CTA：底栏已有「仪表盘」「新建报价」，入口只保留主操作 */}
+        <div className="w-full flex justify-center">
           <Link
             href="/quote/new"
-            className="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-600 px-6 py-4 min-h-[48px] text-white text-base font-medium shadow-lg shadow-emerald-600/25 hover:bg-emerald-500 active:bg-emerald-700 transition-colors w-full sm:w-auto"
+            className="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-600 px-8 py-4 min-h-[48px] text-white text-base font-medium shadow-lg shadow-emerald-600/25 hover:bg-emerald-500 active:bg-emerald-700 transition-colors w-full sm:w-auto"
           >
             <FileText className="h-5 w-5 shrink-0" aria-hidden />
             生成报价链接
-          </Link>
-          <Link
-            href="/dashboard"
-            className="inline-flex items-center justify-center gap-2 rounded-xl border-2 border-slate-200 bg-white px-6 py-4 min-h-[48px] text-slate-700 text-base font-medium hover:border-slate-300 hover:bg-slate-50 active:bg-slate-100 transition-colors w-full sm:w-auto"
-          >
-            <LayoutDashboard className="h-5 w-5 shrink-0" aria-hidden />
-            仪表盘
-            <ArrowRight className="h-4 w-4 shrink-0 opacity-60" aria-hidden />
           </Link>
         </div>
 
