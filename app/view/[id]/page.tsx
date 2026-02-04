@@ -85,7 +85,7 @@ export default async function ViewQuotePage({ params }: Props) {
       <div className="max-w-lg mx-auto px-3 sm:px-6 py-6 sm:py-12 min-w-0">
         <QuoteExportActions>
         {/* Header: gradient band + logo & company */}
-        <header className="rounded-t-2xl overflow-hidden bg-gradient-to-r from-teal-600 via-emerald-600 to-cyan-600 shadow-lg print:rounded-t-xl">
+        <header className="rounded-t-2xl overflow-hidden bg-gradient-to-r from-teal-600 via-emerald-600 to-cyan-600 shadow-sm print:rounded-t-xl">
           <div className="px-6 py-6 sm:py-8 flex flex-col items-center text-center">
             {companyLogoUrl ? (
               <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-xl bg-white/95 shadow-md flex items-center justify-center overflow-hidden mb-3 shrink-0">
@@ -106,7 +106,7 @@ export default async function ViewQuotePage({ params }: Props) {
         </header>
 
         {/* Card: content */}
-        <article className="bg-white rounded-b-2xl sm:rounded-b-2xl shadow-xl shadow-slate-200/50 border border-slate-100 -mt-px overflow-hidden">
+        <article className="bg-white rounded-b-2xl sm:rounded-b-2xl shadow-sm border border-slate-200 -mt-px overflow-hidden">
           <div className="px-6 sm:px-8 py-6 sm:py-8">
             <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-slate-500 mb-5">
               <span className="font-medium text-teal-600">Ref: {quote.short_id}</span>

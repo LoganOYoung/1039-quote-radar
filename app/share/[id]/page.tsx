@@ -20,9 +20,9 @@ export default async function SharePage({ params }: Props) {
   const viewLink = `${baseUrl.replace(/\/$/, "")}/view/${shortId}`;
 
   return (
-    <main className="min-h-screen bg-slate-100 py-8 px-4">
+    <main className="min-h-screen bg-white py-8 px-4">
       <div className="max-w-md mx-auto">
-        <p className="text-center text-slate-600 text-sm mb-4">
+        <p className="text-center text-slate-500 text-sm mb-4">
           分享到微信 / 朋友圈：保存为图片后直接发送，或复制带话术粘贴到聊天
         </p>
         <ShareCardDownload
@@ -35,11 +35,11 @@ export default async function SharePage({ params }: Props) {
             productName={quote.product_name}
             fobPriceUsd={quote.fob_price_usd != null ? Number(quote.fob_price_usd) : null}
             link={viewLink}
-            className="inline-flex items-center gap-2 rounded-xl border border-slate-300 bg-white px-4 py-3 min-h-[48px] text-sm text-slate-700 hover:bg-slate-50"
+            className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white shadow-sm px-4 py-3 min-h-[48px] text-sm text-slate-700 hover:bg-slate-50"
           />
         </div>
         <p className="mt-6 text-center">
-          <Link href="/dashboard" className="text-sm text-emerald-600 hover:underline">
+          <Link href="/dashboard" className="text-sm text-slate-600 hover:text-slate-900">
             返回我的报价
           </Link>
         </p>

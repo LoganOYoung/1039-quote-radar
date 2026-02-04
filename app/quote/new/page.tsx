@@ -2,7 +2,7 @@
 
 import { useState, useCallback, useEffect } from "react";
 import Link from "next/link";
-import { Radar, Copy, Check, Sparkles, ChevronDown, ChevronUp, ChevronLeft } from "lucide-react";
+import { Radar, Copy, Check, Sparkles, ChevronDown, ChevronUp, ChevronLeft, Loader2 } from "lucide-react";
 import { parsePasteText } from "@/lib/parse-paste";
 import { createQuote } from "@/lib/quote-actions";
 import {
@@ -339,8 +339,8 @@ export default function QuoteNewPage() {
         {/* Step 1: 贸易模式 */}
         <div className={isMobile && mobileStep !== 1 ? "hidden" : ""}>
         {/* 1. 贸易模式（最先选，决定后续展示哪些项） */}
-        <section className="mb-4 sm:mb-6 rounded-2xl border border-slate-100 bg-slate-50 p-3 sm:p-4">
-          <h2 className="text-sm font-medium text-slate-700 mb-2">贸易模式</h2>
+        <section className="mb-6 sm:mb-8 rounded-xl border border-slate-200 bg-white shadow-sm p-4 sm:p-5">
+          <h2 className="text-sm font-semibold text-slate-900 mb-2">贸易模式</h2>
           <p className="text-xs text-slate-500 mb-3">根据您的出口方式选择，决定报价公式与需填项。</p>
           <div className="flex flex-col sm:flex-row gap-3">
             <button
@@ -412,7 +412,7 @@ export default function QuoteNewPage() {
           </section>
         )}
         {tradeMode === "general" && isMobile && (
-          <section className="mb-4 rounded-2xl border border-slate-100 bg-slate-50 p-4 text-center">
+          <section className="mb-6 rounded-xl border border-slate-200 bg-white shadow-sm p-4 text-center">
             <p className="text-slate-500 text-sm">一般贸易无需填写成本与国内段，直接下一步</p>
           </section>
         )}
@@ -420,8 +420,8 @@ export default function QuoteNewPage() {
 
         {/* 智能粘贴区 - Step 2 */}
         <div className={isMobile && mobileStep !== 2 ? "hidden" : ""}>
-        <section className="mb-4 sm:mb-6 rounded-2xl border border-slate-100 bg-slate-50 p-4">
-          <div className="flex items-center gap-2 mb-2 text-emerald-600">
+        <section className="mb-6 sm:mb-8 rounded-xl border border-slate-200 bg-white shadow-sm p-4 sm:p-5">
+          <div className="flex items-center gap-2 mb-2 text-slate-700">
             <Sparkles className="w-4 h-4" />
             <span className="text-sm font-medium">智能粘贴</span>
           </div>
@@ -499,7 +499,7 @@ export default function QuoteNewPage() {
           {/* Step 3 之二：箱规与国内段（仅 1039） */}
           <div className={isMobile && mobileStep !== 3 ? "hidden" : ""}>
           {tradeMode === "1039" && (
-            <div className="rounded-xl border border-slate-200 bg-slate-50 p-4 space-y-3">
+            <div className="rounded-xl border border-slate-200 bg-white shadow-sm p-4 space-y-3">
               <h3 className="text-sm font-medium text-slate-700">箱规与重量（可选，用于按重/按方计国内段）</h3>
               <div className="grid grid-cols-2 gap-3">
                 <div>
@@ -761,7 +761,7 @@ export default function QuoteNewPage() {
 
           {/* Step 4：品牌、汇率与选项 */}
           <div className={isMobile && mobileStep !== 4 ? "hidden" : ""}>
-          <div className="rounded-xl border border-slate-200 bg-slate-50 p-4 space-y-3">
+          <div className="rounded-xl border border-slate-200 bg-white shadow-sm p-4 space-y-3">
             <h3 className="text-sm font-medium text-slate-300">品牌 / Logo（发给客户时显示）</h3>
             <div>
               <label className="block text-xs text-slate-500 mb-1">公司 / 品牌名（可选）</label>
@@ -818,7 +818,7 @@ export default function QuoteNewPage() {
 
           {/* Step 5：到岸价、核查与提交 */}
           <div className={isMobile && mobileStep !== 5 ? "hidden" : ""}>
-          <div className="rounded-xl border border-slate-200 bg-slate-50 p-3">
+          <div className="rounded-xl border border-slate-200 bg-white shadow-sm p-3">
             <button
               type="button"
               onClick={() => setShowCfrCif(!showCfrCif)}
@@ -1046,9 +1046,10 @@ export default function QuoteNewPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full rounded-xl bg-emerald-600 py-4 min-h-[48px] font-medium text-base text-white hover:bg-emerald-500 active:bg-emerald-700 disabled:opacity-50 sm:block"
+            className="w-full rounded-xl bg-emerald-600 py-4 min-h-[48px] font-medium text-base text-white shadow-sm hover:bg-emerald-500 active:bg-emerald-700 disabled:opacity-50 sm:flex sm:items-center sm:justify-center sm:gap-2"
             style={isMobile ? { display: "none" } : undefined}
           >
+            {loading && <Loader2 className="w-5 h-5 shrink-0 animate-spin" aria-hidden />}
             {loading ? "生成中…" : "生成报价链接"}
           </button>
           </div>
@@ -1081,7 +1082,7 @@ export default function QuoteNewPage() {
                 type="button"
                 onClick={() => canGoNext && setMobileStep((s) => s + 1)}
                 disabled={!canGoNext}
-                className="rounded-xl bg-emerald-600 px-6 py-3 min-h-[48px] text-white font-medium text-base flex-1 sm:flex-initial hover:bg-emerald-500 active:bg-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="rounded-xl bg-emerald-600 px-6 py-3 min-h-[48px] text-white font-medium text-base flex-1 sm:flex-initial shadow-sm hover:bg-emerald-500 active:bg-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 下一步
               </button>
@@ -1090,8 +1091,9 @@ export default function QuoteNewPage() {
                 type="submit"
                 form="quote-new-form"
                 disabled={loading}
-                className="rounded-xl bg-emerald-600 px-6 py-3 min-h-[48px] text-white font-medium text-base flex-1 hover:bg-emerald-500 active:bg-emerald-700 disabled:opacity-50"
+                className="rounded-xl bg-emerald-600 px-6 py-3 min-h-[48px] text-white font-medium text-base flex-1 shadow-sm hover:bg-emerald-500 active:bg-emerald-700 disabled:opacity-50 inline-flex items-center justify-center gap-2"
               >
+                {loading && <Loader2 className="w-5 h-5 shrink-0 animate-spin" aria-hidden />}
                 {loading ? "生成中…" : "生成报价链接"}
               </button>
             )}
@@ -1100,8 +1102,8 @@ export default function QuoteNewPage() {
 
         {/* 生成结果 */}
         {generatedLink && (
-          <section className="mt-6 rounded-xl border border-emerald-700 bg-emerald-950/30 p-4">
-            <p className="text-sm text-slate-400 mb-2">专业报价链接（发给客户即可，打开即被记录）</p>
+          <section className="mt-6 rounded-xl border border-emerald-200 bg-emerald-50/80 shadow-sm p-4 sm:p-5">
+            <p className="text-sm text-slate-500 mb-2">专业报价链接（发给客户即可，打开即被记录）</p>
             <div className="flex flex-wrap gap-2">
               <input
                 type="text"
@@ -1112,7 +1114,7 @@ export default function QuoteNewPage() {
               <button
                 type="button"
                 onClick={copyLink}
-                className="rounded-lg bg-emerald-600 px-4 py-3 text-white hover:bg-emerald-500 flex items-center gap-2 min-h-[44px]"
+                className="rounded-xl bg-emerald-600 px-4 py-3 text-white shadow-sm hover:bg-emerald-500 flex items-center gap-2 min-h-[44px]"
               >
                 {copied ? <Check className="w-5 h-5" /> : <Copy className="w-5 h-5" />}
                 {copied ? "已复制" : "复制链接"}

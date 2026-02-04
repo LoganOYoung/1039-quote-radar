@@ -138,7 +138,7 @@ export default async function DashboardPage() {
             </Link>
             <Link
               href="/quote/new"
-              className="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-600 px-4 py-3 min-h-[48px] text-sm font-medium text-white hover:bg-emerald-500 active:bg-emerald-700"
+              className="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-600 px-4 py-3 min-h-[48px] text-sm font-medium text-white shadow-sm hover:bg-emerald-500 active:bg-emerald-700"
             >
               <FileText className="w-4 h-4 shrink-0" />
               新建报价
@@ -148,10 +148,10 @@ export default async function DashboardPage() {
 
         {/* Feed 流：刚刚 · 你的 xx 报价在 xx 被打开 */}
         {recentLogs.length > 0 && (
-          <section className="mb-6 rounded-xl border border-slate-200 bg-slate-50 p-4">
-            <div className="flex items-center gap-2 text-emerald-600 mb-3">
-              <Activity className="w-4 h-4" />
-              <span className="text-sm font-medium">实时动态</span>
+          <section className="mb-8 rounded-xl border border-slate-200 bg-white shadow-sm p-4 sm:p-5">
+            <div className="flex items-center gap-2 text-slate-700 mb-3">
+              <Activity className="w-4 h-4 text-slate-500" />
+              <span className="text-sm font-semibold">实时动态</span>
             </div>
             <ul className="space-y-2 max-h-40 overflow-y-auto">
               {recentLogs.map((log, i) => (
@@ -159,7 +159,7 @@ export default async function DashboardPage() {
                   <span className="text-slate-500 shrink-0">{formatTimeAgo(log.viewed_at)}</span>
                   <span>
                     你的「{log.product_name}」报价在{" "}
-                    <span className="text-emerald-600">{log.location_city || "未知"}</span> 被打开
+                    <span className="font-medium text-slate-800">{log.location_city || "未知"}</span> 被打开
                     {log.duration_seconds != null && log.duration_seconds > 0 && (
                       <span className="text-slate-500">，停留 {log.duration_seconds} 秒</span>
                     )}
@@ -170,13 +170,14 @@ export default async function DashboardPage() {
           </section>
         )}
 
-        <h2 className="text-lg font-semibold text-slate-800 mb-4">报价列表</h2>
+        <h2 className="text-lg font-semibold text-slate-900 mb-4">报价列表</h2>
 
         {!quotes || quotes.length === 0 ? (
-          <div className="rounded-xl border border-slate-200 bg-slate-50 p-8 text-center text-slate-500">
-            <p>暂无报价单</p>
-            <Link href="/quote/new" className="mt-3 inline-block text-emerald-600 hover:underline">
-              去生成第一条报价链接 →
+          <div className="rounded-xl border border-slate-200 bg-white shadow-sm p-10 text-center">
+            <p className="text-slate-500 mb-1">暂无报价单</p>
+            <p className="text-sm text-slate-400 mb-4">生成一条报价链接，发给我客户即可追踪查看</p>
+            <Link href="/quote/new" className="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-600 px-6 py-3 text-white text-sm font-medium shadow-sm hover:bg-emerald-500">
+              去生成第一条报价链接
             </Link>
           </div>
         ) : (
@@ -187,8 +188,8 @@ export default async function DashboardPage() {
               return (
                 <li
                   key={q.id}
-                  className={`rounded-xl border p-3 sm:p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 ${
-                    isMultiIp ? "border-red-300 bg-red-50" : "border-slate-200 bg-slate-50"
+                  className={`rounded-xl border p-3 sm:p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 shadow-sm ${
+                    isMultiIp ? "border-red-200 bg-red-50/50" : "border-slate-200 bg-white"
                   }`}
                 >
                   <div className="min-w-0 flex-1">

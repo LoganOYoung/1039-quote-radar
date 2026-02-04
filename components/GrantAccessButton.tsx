@@ -34,7 +34,7 @@ export default function GrantAccessButton({ requestId, onGranted }: Props) {
       type="button"
       onClick={handleGrant}
       disabled={loading}
-      className="inline-flex items-center gap-1 rounded-lg bg-emerald-600 px-2.5 py-1 text-xs font-medium text-white hover:bg-emerald-500 disabled:opacity-50"
+      className="inline-flex items-center gap-1 rounded-xl bg-emerald-600 px-2.5 py-1 text-xs font-medium text-white shadow-sm hover:bg-emerald-500 disabled:opacity-50"
     >
       <Unlock className="w-3.5 h-3.5" />
       {loading ? "授权中…" : "授权"}

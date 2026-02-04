@@ -62,7 +62,7 @@ export default async function AdminPage() {
       <div className="max-w-4xl mx-auto">
         <header className="flex items-center justify-between mb-6">
           <Link href="/" className="flex items-center gap-2 text-slate-500 hover:text-slate-900">
-            <Radar className="w-8 h-8 text-emerald-600" />
+            <Radar className="w-8 h-8 text-slate-600" />
             <span className="text-xl font-bold">1039报价雷达</span>
           </Link>
           <Link
@@ -74,7 +74,7 @@ export default async function AdminPage() {
         </header>
 
         <h1 className="text-2xl font-bold text-slate-900 mb-6 flex items-center gap-2">
-          <BarChart3 className="w-7 h-7 text-emerald-600" />
+          <BarChart3 className="w-7 h-7 text-slate-500" />
           后台数据看板
         </h1>
         <p className="text-slate-500 text-sm mb-8">
@@ -82,11 +82,11 @@ export default async function AdminPage() {
         </p>
 
         <section className="mb-10">
-          <h2 className="text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2">
-            <Package className="w-5 h-5 text-emerald-600" />
+          <h2 className="text-lg font-semibold text-slate-900 mb-4 flex items-center gap-2">
+            <Package className="w-5 h-5 text-slate-500" />
             品类 × 报价数 × 平均 FOB 价
           </h2>
-          <div className="rounded-xl border border-slate-200 bg-slate-50 overflow-hidden">
+          <div className="rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden">
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-slate-200 text-slate-500 text-left">
@@ -102,7 +102,7 @@ export default async function AdminPage() {
                       {row.name}
                     </td>
                     <td className="p-3 text-slate-600">{row.count}</td>
-                    <td className="p-3 text-emerald-600">
+                    <td className="p-3 text-slate-800 font-medium">
                       {row.avgFob != null ? row.avgFob.toFixed(2) : "—"}
                     </td>
                   </tr>
@@ -113,11 +113,11 @@ export default async function AdminPage() {
         </section>
 
         <section>
-          <h2 className="text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2">
-            <MapPin className="w-5 h-5 text-emerald-600" />
+          <h2 className="text-lg font-semibold text-slate-900 mb-4 flex items-center gap-2">
+            <MapPin className="w-5 h-5 text-slate-500" />
             访问地域分布
           </h2>
-          <div className="rounded-xl border border-slate-200 bg-slate-50 overflow-hidden">
+          <div className="rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden">
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-slate-200 text-slate-500 text-left">

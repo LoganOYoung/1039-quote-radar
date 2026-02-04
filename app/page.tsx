@@ -51,18 +51,18 @@ export default function HomePage() {
         <div className="w-full max-w-xl flex flex-col items-center flex-1">
           {/* 第一屏：品牌 + 一句话价值 */}
           <section
-            className="w-full flex flex-col items-center text-center mb-10 sm:mb-14 min-h-[50dvh] sm:min-h-0 justify-center sm:justify-start"
+            className="w-full flex flex-col items-center text-center mb-10 sm:mb-12 min-h-[50dvh] sm:min-h-0 justify-center sm:justify-start"
             aria-label="产品介绍"
           >
-            <div className="flex items-center justify-center gap-2.5 mb-2">
-              <span className="flex h-11 w-11 sm:h-12 sm:w-12 items-center justify-center rounded-xl bg-emerald-500 text-white shadow-lg shadow-emerald-500/25">
+            <div className="flex items-center justify-center gap-2.5 mb-3">
+              <span className="flex h-11 w-11 sm:h-12 sm:w-12 items-center justify-center rounded-xl bg-emerald-500 text-white shadow-sm">
                 <Radar className="h-6 w-6 sm:h-7 sm:w-7" aria-hidden />
               </span>
               <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900">
                 1039报价雷达
               </h1>
             </div>
-            <p className="text-slate-600 text-base sm:text-lg font-medium max-w-md mb-6 sm:mb-8">
+            <p className="text-slate-600 text-base sm:text-lg max-w-md mb-6 sm:mb-8 leading-relaxed">
               专业报价链接，客户一点开你都知道
             </p>
             <p className="text-slate-400 text-xs sm:block hidden">
@@ -71,19 +71,19 @@ export default function HomePage() {
           </section>
 
           {/* 第二屏：工具、功能与价值（正向表述，不引起顾虑） */}
-          <section className="w-full sm:mb-8" aria-label="工具与价值">
-            <ul className="w-full space-y-4 sm:space-y-5 text-left">
+          <section className="w-full sm:mb-10" aria-label="工具与价值">
+            <ul className="w-full space-y-4 text-left">
               {valueItems.map(({ icon: Icon, title, desc }) => (
                 <li
                   key={title}
-                  className="flex items-start gap-3 sm:gap-4 rounded-2xl bg-slate-50 border border-slate-100 px-4 py-3.5 sm:px-5 sm:py-4"
+                  className="flex items-start gap-3 sm:gap-4 rounded-xl bg-white border border-slate-200 shadow-sm px-4 py-3.5 sm:px-5 sm:py-4"
                 >
-                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-emerald-500/10 text-emerald-600">
+                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-slate-100 text-slate-600">
                     <Icon className="h-4 w-4 sm:h-5 sm:w-5" aria-hidden />
                   </span>
                   <div className="min-w-0">
-                    <p className="font-medium text-slate-900">{title}</p>
-                    <p className="text-sm text-slate-500 mt-0.5 leading-relaxed">{desc}</p>
+                    <p className="font-semibold text-slate-900 text-sm sm:text-base">{title}</p>
+                    <p className="text-sm text-slate-500 mt-1 leading-relaxed">{desc}</p>
                   </div>
                 </li>
               ))}
@@ -94,7 +94,7 @@ export default function HomePage() {
           <div className="w-full flex justify-center mt-8 sm:mt-10 pb-4 hidden sm:flex">
             <Link
               href="/quote/new"
-              className="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-600 px-8 py-4 min-h-[48px] text-white text-base font-medium shadow-lg shadow-emerald-600/25 hover:bg-emerald-500 active:bg-emerald-700 transition-colors w-full sm:w-auto"
+              className="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-600 px-8 py-4 min-h-[48px] text-white text-base font-medium shadow-sm hover:bg-emerald-500 active:bg-emerald-700 transition-colors w-full sm:w-auto"
             >
               <FileText className="h-5 w-5 shrink-0" aria-hidden />
               生成报价链接
@@ -120,7 +120,7 @@ export default function HomePage() {
         <div className="px-4 py-3 flex justify-center">
           <Link
             href="/quote/new"
-            className="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-600 px-8 py-4 min-h-[48px] text-white text-base font-medium shadow-lg shadow-emerald-600/25 hover:bg-emerald-500 active:bg-emerald-700 transition-colors w-full max-w-sm"
+            className="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-600 px-8 py-4 min-h-[48px] text-white text-base font-medium shadow-sm hover:bg-emerald-500 active:bg-emerald-700 transition-colors w-full max-w-sm"
           >
             <FileText className="h-5 w-5 shrink-0" aria-hidden />
             生成报价链接
