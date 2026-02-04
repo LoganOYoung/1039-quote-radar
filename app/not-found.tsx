@@ -9,7 +9,7 @@ export default function NotFound() {
       <p className="text-slate-500 text-sm mb-6">报价链接可能已失效或地址有误。</p>
       <Link
         href="/"
-        className="rounded-xl bg-emerald-600 px-6 py-3 text-white font-medium shadow-sm hover:bg-emerald-500"
+        className="rounded-none bg-emerald-600 px-6 py-3 text-white font-medium shadow-sm hover:bg-emerald-500"
       >
         返回首页
       </Link>

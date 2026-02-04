@@ -37,7 +37,7 @@ export default function ShareCardDownload({ productName, fobPriceUsd, customerNa
     <div className="max-w-sm mx-auto">
       <div
         ref={cardRef}
-        className="rounded-2xl overflow-hidden bg-white shadow-lg border border-slate-100"
+        className="rounded-none overflow-hidden bg-white shadow-lg border border-slate-100"
         style={{ width: 375 }}
       >
         <div className="bg-gradient-to-r from-teal-600 via-emerald-600 to-cyan-600 px-6 py-5">
@@ -64,7 +64,7 @@ export default function ShareCardDownload({ productName, fobPriceUsd, customerNa
         type="button"
         onClick={handleDownload}
         disabled={loading}
-        className="mt-4 w-full rounded-xl bg-emerald-600 py-3 px-4 min-h-[48px] text-white font-medium hover:bg-emerald-500 disabled:opacity-50 flex items-center justify-center gap-2"
+        className="mt-4 w-full rounded-none bg-emerald-600 py-3 px-4 min-h-[48px] text-white font-medium hover:bg-emerald-500 disabled:opacity-50 flex items-center justify-center gap-2"
       >
         <Download className="w-5 h-5" />
         {loading ? "生成中…" : "保存为图片"}

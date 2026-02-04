@@ -50,7 +50,7 @@ export default function AppNav() {
             <Link
               key={href}
               href={href}
-              className={`flex flex-col items-center justify-center gap-0.5 min-w-[64px] min-h-[44px] rounded-lg transition-colors ${activeClass}`}
+              className={`flex flex-col items-center justify-center gap-0.5 min-w-[64px] min-h-[44px] rounded-none transition-colors ${activeClass}`}
               aria-current={isActive ? "page" : undefined}
             >
               <Icon className="w-6 h-6 shrink-0" aria-hidden />

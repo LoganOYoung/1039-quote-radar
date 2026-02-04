@@ -138,7 +138,7 @@ export default async function DashboardPage() {
             </Link>
             <Link
               href="/quote/new"
-              className="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-600 px-4 py-3 min-h-[48px] text-sm font-medium text-white shadow-sm hover:bg-emerald-500 active:bg-emerald-700"
+              className="inline-flex items-center justify-center gap-2 rounded-none bg-emerald-600 px-4 py-3 min-h-[48px] text-sm font-medium text-white shadow-sm hover:bg-emerald-500 active:bg-emerald-700"
             >
               <FileText className="w-4 h-4 shrink-0" />
               新建报价
@@ -148,7 +148,7 @@ export default async function DashboardPage() {
 
         {/* Feed 流：刚刚 · 你的 xx 报价在 xx 被打开 */}
         {recentLogs.length > 0 && (
-          <section className="mb-8 rounded-xl border border-slate-200 bg-white shadow-sm p-4 sm:p-5">
+          <section className="mb-8 rounded-none border border-slate-200 bg-white shadow-sm p-4 sm:p-5">
             <div className="flex items-center gap-2 text-slate-700 mb-3">
               <Activity className="w-4 h-4 text-slate-500" />
               <span className="text-sm font-semibold">实时动态</span>
@@ -173,10 +173,10 @@ export default async function DashboardPage() {
         <h2 className="text-lg font-semibold text-slate-900 mb-4">报价列表</h2>
 
         {!quotes || quotes.length === 0 ? (
-          <div className="rounded-xl border border-slate-200 bg-white shadow-sm p-10 text-center">
+          <div className="rounded-none border border-slate-200 bg-white shadow-sm p-10 text-center">
             <p className="text-slate-500 mb-1">暂无报价单</p>
             <p className="text-sm text-slate-400 mb-4">生成一条报价链接，发给我客户即可追踪查看</p>
-            <Link href="/quote/new" className="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-600 px-6 py-3 text-white text-sm font-medium shadow-sm hover:bg-emerald-500">
+            <Link href="/quote/new" className="inline-flex items-center justify-center gap-2 rounded-none bg-emerald-600 px-6 py-3 text-white text-sm font-medium shadow-sm hover:bg-emerald-500">
               去生成第一条报价链接
             </Link>
           </div>
@@ -188,7 +188,7 @@ export default async function DashboardPage() {
               return (
                 <li
                   key={q.id}
-                  className={`rounded-xl border p-3 sm:p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 shadow-sm ${
+                  className={`rounded-none border p-3 sm:p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 shadow-sm ${
                     isMultiIp ? "border-red-200 bg-red-50/50" : "border-slate-200 bg-white"
                   }`}
                 >
@@ -235,13 +235,13 @@ export default async function DashboardPage() {
                   </div>
                   <div className="flex items-center gap-3 flex-wrap">
                     {isMultiIp && (
-                      <span className="inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-medium bg-red-100 text-red-600">
+                      <span className="inline-flex items-center gap-1 rounded-none px-2.5 py-0.5 text-xs font-medium bg-red-100 text-red-600">
                         <AlertTriangle className="w-3.5 h-3.5" />
                         可能已被转发比价
                       </span>
                     )}
                     <span
-                      className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-medium ${
+                      className={`inline-flex items-center gap-1 rounded-none px-2.5 py-0.5 text-xs font-medium ${
                         (q.views_count ?? 0) > 0
                           ? "bg-emerald-100 text-emerald-600"
                           : "bg-slate-100 text-slate-500"
@@ -254,14 +254,14 @@ export default async function DashboardPage() {
                       href={`${baseUrl}/view/${q.short_id}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1 rounded-lg border border-slate-200 px-3 py-2 min-h-[44px] text-sm text-slate-700 hover:bg-slate-100"
+                      className="inline-flex items-center gap-1 rounded-none border border-slate-200 px-3 py-2 min-h-[44px] text-sm text-slate-700 hover:bg-slate-100"
                     >
                       <ExternalLink className="w-4 h-4" />
                       链接
                     </a>
                     <Link
                       href={`/share/${q.short_id}`}
-                      className="inline-flex items-center gap-1 rounded-lg border border-slate-200 px-3 py-2 min-h-[44px] text-sm text-slate-700 hover:bg-slate-100"
+                      className="inline-flex items-center gap-1 rounded-none border border-slate-200 px-3 py-2 min-h-[44px] text-sm text-slate-700 hover:bg-slate-100"
                     >
                       <Image className="w-4 h-4" />
                       长图
@@ -270,7 +270,7 @@ export default async function DashboardPage() {
                       productName={q.product_name}
                       fobPriceUsd={q.fob_price_usd != null ? Number(q.fob_price_usd) : null}
                       link={`${baseUrl}/view/${q.short_id}`}
-                      className="inline-flex items-center gap-1 rounded-lg border border-slate-200 px-3 py-2 min-h-[44px] text-sm text-slate-700 hover:bg-slate-100"
+                      className="inline-flex items-center gap-1 rounded-none border border-slate-200 px-3 py-2 min-h-[44px] text-sm text-slate-700 hover:bg-slate-100"
                     />
                   </div>
                 </li>

@@ -35,7 +35,7 @@ export default async function SharePage({ params }: Props) {
             productName={quote.product_name}
             fobPriceUsd={quote.fob_price_usd != null ? Number(quote.fob_price_usd) : null}
             link={viewLink}
-            className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white shadow-sm px-4 py-3 min-h-[48px] text-sm text-slate-700 hover:bg-slate-50"
+            className="inline-flex items-center gap-2 rounded-none border border-slate-200 bg-white shadow-sm px-4 py-3 min-h-[48px] text-sm text-slate-700 hover:bg-slate-50"
           />
         </div>
         <p className="mt-6 text-center">

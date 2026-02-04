@@ -86,7 +86,7 @@ export default async function AdminPage() {
             <Package className="w-5 h-5 text-slate-500" />
             品类 × 报价数 × 平均 FOB 价
           </h2>
-          <div className="rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+          <div className="rounded-none border border-slate-200 bg-white shadow-sm overflow-hidden">
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-slate-200 text-slate-500 text-left">
@@ -117,7 +117,7 @@ export default async function AdminPage() {
             <MapPin className="w-5 h-5 text-slate-500" />
             访问地域分布
           </h2>
-          <div className="rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+          <div className="rounded-none border border-slate-200 bg-white shadow-sm overflow-hidden">
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-slate-200 text-slate-500 text-left">

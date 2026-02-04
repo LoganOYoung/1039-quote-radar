@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-/* 设计约定：圆角 卡片/区块 rounded-xl，按钮/输入 rounded-lg；阴影 卡片 shadow-sm，主按钮 shadow-sm */
+/* 设计约定：直角边框 rounded-none；阴影 卡片 shadow-sm，主按钮 shadow-sm */
 :root {
   --foreground: #0a0a0a;
   --background: #fafafa;

@@ -55,7 +55,7 @@ export default function HomePage() {
             aria-label="产品介绍"
           >
             <div className="flex items-center justify-center gap-2.5 mb-3">
-              <span className="flex h-11 w-11 sm:h-12 sm:w-12 items-center justify-center rounded-xl bg-emerald-500 text-white shadow-sm">
+              <span className="flex h-11 w-11 sm:h-12 sm:w-12 items-center justify-center rounded-none bg-emerald-500 text-white shadow-sm">
                 <Radar className="h-6 w-6 sm:h-7 sm:w-7" aria-hidden />
               </span>
               <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900">
@@ -73,9 +73,9 @@ export default function HomePage() {
               {valueItems.map(({ icon: Icon, title, desc }) => (
                 <li
                   key={title}
-                  className="flex items-start gap-3 sm:gap-4 rounded-xl bg-white border border-slate-200 shadow-sm px-4 py-3.5 sm:px-5 sm:py-4"
+                  className="flex items-start gap-3 sm:gap-4 rounded-none bg-white border border-slate-200 shadow-sm px-4 py-3.5 sm:px-5 sm:py-4"
                 >
-                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-slate-100 text-slate-600">
+                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-none bg-slate-100 text-slate-600">
                     <Icon className="h-4 w-4 sm:h-5 sm:w-5" aria-hidden />
                   </span>
                   <div className="min-w-0">
@@ -91,7 +91,7 @@ export default function HomePage() {
           <div className="w-full flex justify-center mt-6 sm:mt-10 pb-4 hidden sm:flex">
             <Link
               href="/quote/new"
-              className="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-600 px-8 py-4 min-h-[48px] text-white text-base font-medium shadow-sm hover:bg-emerald-500 active:bg-emerald-700 transition-colors w-full sm:w-auto"
+              className="inline-flex items-center justify-center gap-2 rounded-none bg-emerald-600 px-8 py-4 min-h-[48px] text-white text-base font-medium shadow-sm hover:bg-emerald-500 active:bg-emerald-700 transition-colors w-full sm:w-auto"
             >
               <FileText className="h-5 w-5 shrink-0" aria-hidden />
               生成报价链接
@@ -117,7 +117,7 @@ export default function HomePage() {
         <div className="px-4 py-3 flex justify-center">
           <Link
             href="/quote/new"
-            className="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-600 px-8 py-4 min-h-[48px] text-white text-base font-medium shadow-sm hover:bg-emerald-500 active:bg-emerald-700 transition-colors w-full max-w-sm"
+            className="inline-flex items-center justify-center gap-2 rounded-none bg-emerald-600 px-8 py-4 min-h-[48px] text-white text-base font-medium shadow-sm hover:bg-emerald-500 active:bg-emerald-700 transition-colors w-full max-w-sm"
           >
             <FileText className="h-5 w-5 shrink-0" aria-hidden />
             生成报价链接

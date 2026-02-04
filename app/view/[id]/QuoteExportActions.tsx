@@ -45,7 +45,7 @@ export default function QuoteExportActions({ children }: Props) {
           type="button"
           onClick={handlePrint}
           disabled={!!saving}
-          className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white shadow-sm px-4 py-3 min-h-[48px] text-sm font-medium text-slate-700 hover:bg-slate-50 active:bg-slate-100 disabled:opacity-50"
+          className="inline-flex items-center gap-2 rounded-none border border-slate-200 bg-white shadow-sm px-4 py-3 min-h-[48px] text-sm font-medium text-slate-700 hover:bg-slate-50 active:bg-slate-100 disabled:opacity-50"
         >
           <FileDown className="w-4 h-4" aria-hidden />
           Save as PDF
@@ -54,7 +54,7 @@ export default function QuoteExportActions({ children }: Props) {
           type="button"
           onClick={handleSaveImage}
           disabled={!!saving}
-          className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white shadow-sm px-4 py-3 min-h-[48px] text-sm font-medium text-slate-700 hover:bg-slate-50 active:bg-slate-100 disabled:opacity-50"
+          className="inline-flex items-center gap-2 rounded-none border border-slate-200 bg-white shadow-sm px-4 py-3 min-h-[48px] text-sm font-medium text-slate-700 hover:bg-slate-50 active:bg-slate-100 disabled:opacity-50"
         >
           <Image className="w-4 h-4" aria-hidden />
           {saving === "image" ? "Saving…" : "Save as image"}
