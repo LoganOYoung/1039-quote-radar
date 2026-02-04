@@ -3,12 +3,12 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, LayoutDashboard, FileText } from "lucide-react";
+import { FileText, LayoutDashboard, BarChart2 } from "lucide-react";
 
 const navItems = [
-  { href: "/", label: "首页", icon: Home },
+  { href: "/", label: "新建报价", icon: FileText },
   { href: "/dashboard", label: "我的报价", icon: LayoutDashboard },
-  { href: "/quote/new", label: "新建报价", icon: FileText },
+  { href: "/databoard", label: "数据表盘", icon: BarChart2 },
 ] as const;
 
 export default function AppNav() {
@@ -22,7 +22,7 @@ export default function AppNav() {
     return () => mq.removeEventListener("change", update);
   }, []);
   const showNav =
-    (pathname === "/" || pathname === "/dashboard" || pathname === "/quote/new") &&
+    (pathname === "/" || pathname === "/dashboard" || pathname === "/databoard" || pathname === "/quote/new") &&
     !(pathname === "/quote/new" && isNarrow);
 
   if (!showNav) return null;

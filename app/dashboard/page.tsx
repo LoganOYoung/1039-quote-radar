@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Radar, FileText, ExternalLink, Eye, AlertTriangle, Activity, Image, Lock } from "lucide-react";
+import { Radar, FileText, ExternalLink, Eye, AlertTriangle, Activity, Image, Lock, MapPin } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import GrantAccessButton from "@/components/GrantAccessButton";
 import CopyShareScriptButton from "@/components/CopyShareScriptButton";
@@ -34,14 +34,10 @@ export default async function DashboardPage() {
 
   const quoteIds = (quotes || []).map((q) => q.id);
   const ipCountByQuote: Record<string, number> = {};
+  const cityCountByQuote: Record<string, number> = {};
+  const latestCityByQuote: Record<string, string | null> = {};
   const latestDurationByQuote: Record<string, number | null> = {};
   let pendingAccessByQuote: Record<string, Array<{ id: string; session_token: string; location_city: string | null; created_at: string }>> = {};
-  let recentLogs: Array<{
-    product_name: string;
-    location_city: string | null;
-    viewed_at: string;
-    duration_seconds: number | null;
-  }> = [];
 
   if (quoteIds.length > 0) {
     const { data: pendingRequests } = await supabase
@@ -67,14 +63,19 @@ export default async function DashboardPage() {
 
     if (logs) {
       const distinctIpsByQuote: Record<string, Set<string>> = {};
+      const distinctCitiesByQuote: Record<string, Set<string>> = {};
       for (const log of logs) {
         if (!distinctIpsByQuote[log.quote_id]) distinctIpsByQuote[log.quote_id] = new Set();
         if (log.ip_address) distinctIpsByQuote[log.quote_id].add(log.ip_address);
+        if (!distinctCitiesByQuote[log.quote_id]) distinctCitiesByQuote[log.quote_id] = new Set();
+        const city = (log.location_city || "").trim() || "未知";
+        distinctCitiesByQuote[log.quote_id].add(city);
       }
       for (const id of quoteIds) {
         ipCountByQuote[id] = distinctIpsByQuote[id]?.size ?? 0;
+        cityCountByQuote[id] = distinctCitiesByQuote[id]?.size ?? 0;
       }
-      // 每条报价最近一次访问的停留时长（用于列表展示「阅读时长」）
+      // 每条报价最近一次访问的停留时长与地区
       const sortedByViewed = [...logs].sort(
         (a, b) => new Date(b.viewed_at).getTime() - new Date(a.viewed_at).getTime()
       );
@@ -82,38 +83,10 @@ export default async function DashboardPage() {
         if (latestDurationByQuote[log.quote_id] == null && log.duration_seconds != null && log.duration_seconds > 0) {
           latestDurationByQuote[log.quote_id] = log.duration_seconds;
         }
+        if (latestCityByQuote[log.quote_id] == null && log.location_city?.trim()) {
+          latestCityByQuote[log.quote_id] = log.location_city.trim();
+        }
       }
-    }
-
-    const { data: feedLogs } = await supabase
-      .from("quote_logs")
-      .select("quote_id, location_city, viewed_at, duration_seconds, quotes(product_name)")
-      .order("viewed_at", { ascending: false })
-      .limit(20);
-
-    if (feedLogs) {
-      type Row = {
-        quote_id: string;
-        location_city: string | null;
-        viewed_at: string;
-        duration_seconds: number | null;
-        quotes: { product_name: string } | { product_name: string }[] | null;
-      };
-      recentLogs = (feedLogs as unknown as Row[])
-        .filter((l) => {
-          const q = l.quotes;
-          return Array.isArray(q) ? q[0]?.product_name : q?.product_name;
-        })
-        .map((l) => {
-          const q = l.quotes;
-          const name = Array.isArray(q) ? q[0]?.product_name : q?.product_name;
-          return {
-            product_name: name || "",
-            location_city: l.location_city,
-            viewed_at: l.viewed_at,
-            duration_seconds: l.duration_seconds,
-          };
-        });
     }
   }
 
@@ -146,29 +119,15 @@ export default async function DashboardPage() {
           </div>
         </header>
 
-        {/* Feed 流：刚刚 · 你的 xx 报价在 xx 被打开 */}
-        {recentLogs.length > 0 && (
-          <section className="mb-8 rounded-none border border-slate-200 bg-white shadow-sm p-4 sm:p-5">
-            <div className="flex items-center gap-2 text-slate-700 mb-3">
-              <Activity className="w-4 h-4 text-slate-500" />
-              <span className="text-sm font-semibold">实时动态</span>
-            </div>
-            <ul className="space-y-2 max-h-40 overflow-y-auto">
-              {recentLogs.map((log, i) => (
-                <li key={i} className="text-sm text-slate-600 flex items-center gap-2">
-                  <span className="text-slate-500 shrink-0">{formatTimeAgo(log.viewed_at)}</span>
-                  <span>
-                    你的「{log.product_name}」报价在{" "}
-                    <span className="font-medium text-slate-800">{log.location_city || "未知"}</span> 被打开
-                    {log.duration_seconds != null && log.duration_seconds > 0 && (
-                      <span className="text-slate-500">，停留 {log.duration_seconds} 秒</span>
-                    )}
-                  </span>
-                </li>
-              ))}
-            </ul>
-          </section>
-        )}
+        <div className="mb-4">
+          <Link
+            href="/databoard"
+            className="inline-flex items-center gap-1 text-sm text-emerald-600 hover:text-emerald-700 font-medium"
+          >
+            <Activity className="w-4 h-4" />
+            查看数据表盘：动态、建议动作与使用引导
+          </Link>
+        </div>
 
         <h2 className="text-lg font-semibold text-slate-900 mb-4">报价列表</h2>
 
@@ -204,7 +163,7 @@ export default async function DashboardPage() {
                     <p className="text-sm text-slate-500 truncate">
                       {q.customer_name || "—"} · {new Date(q.created_at).toLocaleString("zh-CN")}
                     </p>
-                    {/* 客户行为：已读/次数、独立人数、最近阅读时长 */}
+                    {/* 客户行为：已读/次数、独立人数、地区、最近阅读时长 */}
                     <div className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-0.5 text-xs text-slate-500">
                       <span className={((q.views_count ?? 0) > 0 ? "text-emerald-600" : "") + " font-medium"}>
                         {(q.views_count ?? 0) > 0 ? "已读" : "未读"} ({q.views_count ?? 0} 次)
@@ -217,8 +176,14 @@ export default async function DashboardPage() {
                           )}
                         </span>
                       )}
+                      {(cityCountByQuote[q.id] ?? 0) > 0 && (
+                        <span>来自 {cityCountByQuote[q.id]} 个地区</span>
+                      )}
+                      {latestCityByQuote[q.id] && (
+                        <span>最近来自 {latestCityByQuote[q.id]}</span>
+                      )}
                       {latestDurationByQuote[q.id] != null && latestDurationByQuote[q.id]! > 0 && (
-                        <span>最近停留 {latestDurationByQuote[q.id]} 秒</span>
+                        <span>停留 {latestDurationByQuote[q.id]} 秒</span>
                       )}
                     </div>
                     {(pendingAccessByQuote[q.id]?.length ?? 0) > 0 && (
@@ -250,6 +215,13 @@ export default async function DashboardPage() {
                       <Eye className="w-3.5 h-3.5" />
                       {(q.views_count ?? 0) > 0 ? "已读" : "未读"} ({q.views_count ?? 0})
                     </span>
+                    <Link
+                      href={`/dashboard/visits/${q.short_id}`}
+                      className="inline-flex items-center gap-1 rounded-none border border-slate-200 px-3 py-2 min-h-[44px] text-sm text-slate-700 hover:bg-slate-100"
+                    >
+                      <MapPin className="w-4 h-4" />
+                      访问明细
+                    </Link>
                     <a
                       href={`${baseUrl}/view/${q.short_id}`}
                       target="_blank"
