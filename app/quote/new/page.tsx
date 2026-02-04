@@ -51,6 +51,8 @@ export default function QuoteNewPage() {
   const [containerType, setContainerType] = useState<"20GP" | "40GP" | "40HQ">("20GP");
   const [containerCount, setContainerCount] = useState("");
   const [yuanPerContainer, setYuanPerContainer] = useState("");
+  const [companyName, setCompanyName] = useState("");
+  const [companyLogoUrl, setCompanyLogoUrl] = useState("");
   const [generatedLink, setGeneratedLink] = useState("");
   const [copied, setCopied] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -119,6 +121,8 @@ export default function QuoteNewPage() {
       accessControlled: accessControlled || undefined,
       shipFrom: tradeMode === "1039" ? shipFrom : undefined,
       domesticCny: finalDomesticCny,
+      companyName: companyName.trim() || undefined,
+      companyLogoUrl: companyLogoUrl.trim() || undefined,
     });
     setLoading(false);
     if (res.error) {
@@ -321,6 +325,30 @@ export default function QuoteNewPage() {
               className="w-full rounded-lg bg-slate-800 border border-slate-600 text-white p-3 focus:ring-2 focus:ring-emerald-500"
               placeholder="用于备注"
             />
+          </div>
+
+          <div className="rounded-xl border border-slate-700 bg-slate-900/30 p-4 space-y-3">
+            <h3 className="text-sm font-medium text-slate-300">品牌 / Logo（发给客户时显示）</h3>
+            <div>
+              <label className="block text-xs text-slate-500 mb-1">公司 / 品牌名（可选）</label>
+              <input
+                type="text"
+                value={companyName}
+                onChange={(e) => setCompanyName(e.target.value)}
+                className="w-full rounded-lg bg-slate-800 border border-slate-600 text-white p-2.5 text-sm focus:ring-2 focus:ring-emerald-500"
+                placeholder="如：ABC Trading Co."
+              />
+            </div>
+            <div>
+              <label className="block text-xs text-slate-500 mb-1">Logo 图片链接（可选）</label>
+              <input
+                type="url"
+                value={companyLogoUrl}
+                onChange={(e) => setCompanyLogoUrl(e.target.value)}
+                className="w-full rounded-lg bg-slate-800 border border-slate-600 text-white p-2.5 text-sm focus:ring-2 focus:ring-emerald-500"
+                placeholder="https://... 或上传到图床后粘贴链接"
+              />
+            </div>
           </div>
 
           {tradeMode === "1039" && (

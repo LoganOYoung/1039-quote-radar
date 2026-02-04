@@ -20,6 +20,8 @@ export type Quote = {
   views_count: number;
   expires_at: string | null;
   created_at: string;
+  company_name: string | null;
+  company_logo_url: string | null;
 };
 
 export type QuoteLog = {

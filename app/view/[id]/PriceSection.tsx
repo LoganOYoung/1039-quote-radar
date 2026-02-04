@@ -61,15 +61,15 @@ export default function PriceSection({
     return (
       <>
         <div>
-          <dt className="text-gray-500 uppercase tracking-wide">FOB Price (USD)</dt>
-          <dd className="font-medium text-lg text-gray-900">
+          <dt className="text-slate-500 uppercase tracking-wide text-xs font-medium">FOB Price (USD)</dt>
+          <dd className="font-bold text-2xl text-teal-600 mt-1">
             $ {fobPriceUsd != null ? Number(fobPriceUsd).toFixed(2) : "—"}
           </dd>
         </div>
         {customerName && (
           <div>
-            <dt className="text-gray-500 uppercase tracking-wide">Prepared for</dt>
-            <dd className="text-gray-700">{customerName}</dd>
+            <dt className="text-slate-500 uppercase tracking-wide text-xs font-medium">Prepared for</dt>
+            <dd className="text-gray-700 mt-1">{customerName}</dd>
           </div>
         )}
       </>

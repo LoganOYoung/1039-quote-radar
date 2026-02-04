@@ -13,11 +13,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id: shortId } = await params;
   const { data: quote } = await supabase
     .from("quotes")
-    .select("product_name, fob_price_usd")
+    .select("product_name, fob_price_usd, company_name")
     .eq("short_id", shortId)
     .single();
   if (!quote) return { title: "Quotation" };
-  const title = `${quote.product_name} - $${quote.fob_price_usd != null ? Number(quote.fob_price_usd).toFixed(2) : ""} USD`;
+  const title = quote.company_name
+    ? `${quote.product_name} - ${quote.company_name}`
+    : `${quote.product_name} - $${quote.fob_price_usd != null ? Number(quote.fob_price_usd).toFixed(2) : ""} USD`;
   const description = `FOB Price: $${quote.fob_price_usd != null ? Number(quote.fob_price_usd).toFixed(2) : "—"} USD · 1039 Quote Radar`;
   return {
     title,
@@ -66,38 +68,58 @@ export default async function ViewQuotePage({ params }: Props) {
 
   const rateLocked = quote.exchange_rate_locked != null;
   const rateUpdatedAt = quote.rate_updated_at;
+  const companyName = quote.company_name?.trim() || null;
+  const companyLogoUrl = quote.company_logo_url?.trim() || null;
 
   const quoteDate = quote.created_at
     ? new Date(quote.created_at).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })
     : null;
 
   return (
-    <main className="min-h-screen bg-gray-50 text-gray-900 p-4 sm:p-6 md:p-10">
+    <main className="min-h-screen bg-gradient-to-b from-slate-100 via-white to-slate-50 text-gray-900">
       <TrackDuration quoteId={quote.id} />
-      <div className="max-w-md mx-auto">
-        {/* Card: formal quotation document */}
-        <article className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
-          <header className="px-5 sm:px-6 pt-5 sm:pt-6 pb-4 border-b border-gray-100">
-            <h1 className="text-xl sm:text-2xl font-semibold text-gray-900">Quotation</h1>
-            <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-xs text-gray-500">
-              <span>Ref: {quote.short_id}</span>
+      <div className="max-w-lg mx-auto px-4 sm:px-6 py-8 sm:py-12">
+        {/* Header: gradient band + logo & company */}
+        <header className="rounded-t-2xl overflow-hidden bg-gradient-to-r from-teal-600 via-emerald-600 to-cyan-600 shadow-lg">
+          <div className="px-6 py-6 sm:py-8 flex flex-col items-center text-center">
+            {companyLogoUrl ? (
+              <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-xl bg-white/95 shadow-md flex items-center justify-center overflow-hidden mb-3 shrink-0">
+                <img
+                  src={companyLogoUrl}
+                  alt={companyName || "Company logo"}
+                  className="w-full h-full object-contain"
+                />
+              </div>
+            ) : null}
+            {(companyName || !companyLogoUrl) && (
+              <h1 className="text-xl sm:text-2xl font-bold text-white drop-shadow-sm">
+                {companyName || "Quotation"}
+              </h1>
+            )}
+            <p className="mt-1 text-teal-100 text-sm font-medium">Price Quotation</p>
+          </div>
+        </header>
+
+        {/* Card: content */}
+        <article className="bg-white rounded-b-2xl sm:rounded-b-2xl shadow-xl shadow-slate-200/50 border border-slate-100 -mt-px overflow-hidden">
+          <div className="px-6 sm:px-8 py-6 sm:py-8">
+            <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-slate-500 mb-5">
+              <span className="font-medium text-teal-600">Ref: {quote.short_id}</span>
               {quoteDate && <span>Date: {quoteDate}</span>}
             </div>
             {rateLocked && (
-              <p className="mt-2 text-xs text-gray-500">
+              <p className="text-xs text-slate-500 mb-4 pb-4 border-b border-slate-100">
                 Exchange rate (locked): 1 USD = {Number(quote.exchange_rate_locked).toFixed(2)} CNY
                 {rateUpdatedAt && (
                   <span> (as of {new Date(quote.rate_updated_at).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })})</span>
                 )}
               </p>
             )}
-          </header>
 
-          <div className="px-5 sm:px-6 py-5 sm:py-6">
-            <dl className="space-y-4 text-sm">
+            <dl className="space-y-5 text-sm">
               <div>
-                <dt className="text-gray-500 uppercase tracking-wide text-xs">Product</dt>
-                <dd className="font-medium text-gray-900 mt-0.5 text-base">{quote.product_name}</dd>
+                <dt className="text-slate-500 uppercase tracking-wide text-xs font-medium">Product</dt>
+                <dd className="font-semibold text-gray-900 mt-1 text-base">{quote.product_name}</dd>
               </div>
               {quote.access_controlled ? (
                 <PriceSection
@@ -110,28 +132,28 @@ export default async function ViewQuotePage({ params }: Props) {
               ) : (
                 <>
                   <div>
-                    <dt className="text-gray-500 uppercase tracking-wide text-xs">FOB Price (USD)</dt>
-                    <dd className="font-semibold text-xl text-gray-900 mt-0.5">
+                    <dt className="text-slate-500 uppercase tracking-wide text-xs font-medium">FOB Price (USD)</dt>
+                    <dd className="font-bold text-2xl text-teal-600 mt-1">
                       $ {quote.fob_price_usd != null ? Number(quote.fob_price_usd).toFixed(2) : "—"}
                     </dd>
                   </div>
                   {quote.customer_name && (
                     <div>
-                      <dt className="text-gray-500 uppercase tracking-wide text-xs">Prepared for</dt>
-                      <dd className="text-gray-700 mt-0.5">{quote.customer_name}</dd>
+                      <dt className="text-slate-500 uppercase tracking-wide text-xs font-medium">Prepared for</dt>
+                      <dd className="text-gray-700 mt-1">{quote.customer_name}</dd>
                     </div>
                   )}
                 </>
               )}
             </dl>
 
-            <p className="mt-5 pt-4 border-t border-gray-100 text-xs text-gray-500">
+            <p className="mt-6 pt-5 border-t border-slate-100 text-xs text-slate-500">
               Prices subject to confirmation. Valid for 7 days from date of issue.
             </p>
           </div>
         </article>
 
-        <footer className="mt-6 text-center text-xs text-gray-400 space-y-1">
+        <footer className="mt-8 text-center text-xs text-slate-400 space-y-1">
           <p>Viewing of this page may be recorded for security.</p>
           <p>Powered by 1039 Quote Radar</p>
         </footer>

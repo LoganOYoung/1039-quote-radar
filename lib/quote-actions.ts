@@ -23,6 +23,10 @@ export type CreateQuoteInput = {
   shipFrom?: ShipFrom;
   /** 国内段运费（元），不传则按 shipFrom 用默认值：义乌 120，工厂直发 0 */
   domesticCny?: number;
+  /** 公司/品牌名（发给客户的报价页头部展示） */
+  companyName?: string;
+  /** 公司 Logo 图片链接（发给客户的报价页头部展示） */
+  companyLogoUrl?: string;
 };
 
 export async function createQuote(input: CreateQuoteInput): Promise<{ shortId: string; error?: string }> {
@@ -50,6 +54,8 @@ export async function createQuote(input: CreateQuoteInput): Promise<{ shortId: s
     row.rate_updated_at = new Date().toISOString();
   }
   if (input.accessControlled === true) row.access_controlled = true;
+  if (input.companyName?.trim()) row.company_name = input.companyName.trim();
+  if (input.companyLogoUrl?.trim()) row.company_logo_url = input.companyLogoUrl.trim();
 
   const { error } = await supabase.from("quotes").insert(row);
 
