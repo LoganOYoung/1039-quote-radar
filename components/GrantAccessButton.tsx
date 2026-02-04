@@ -28,7 +28,7 @@ export default function GrantAccessButton({ requestId, onGranted }: Props) {
     }
   };
 
-  if (done) return <span className="text-xs text-emerald-400">已授权</span>;
+  if (done) return <span className="text-xs text-emerald-600">已授权</span>;
   return (
     <button
       type="button"

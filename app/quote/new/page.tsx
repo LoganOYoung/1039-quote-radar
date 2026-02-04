@@ -173,6 +173,15 @@ export default function QuoteNewPage() {
     setTimeout(() => setCopied(false), 2000);
   };
 
+  const copyWithScript = () => {
+    if (!generatedLink) return;
+    const pricePart = fobPreview != null ? `，FOB $${fobPreview} USD` : "";
+    const text = `【报价】${productName.trim() || "产品"}${pricePart}，详情点击：${generatedLink}`;
+    navigator.clipboard.writeText(text);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
   const exwNum = parseFloat(exwPrice);
   const marginNum = parseFloat(profitMargin);
   const rateNum = parseFloat(exchangeRate);
@@ -306,13 +315,13 @@ export default function QuoteNewPage() {
     true;
 
   return (
-    <main className="min-h-screen bg-slate-950 text-slate-100 px-3 py-4 sm:p-4 md:p-6 overflow-x-hidden" style={{ paddingBottom: isMobile ? "max(6rem, calc(6rem + env(safe-area-inset-bottom)))" : "max(5.5rem, calc(5.5rem + env(safe-area-inset-bottom)))" }}>
+    <main className="min-h-screen bg-white text-slate-800 px-3 py-4 sm:p-4 md:p-6 overflow-x-hidden" style={{ paddingBottom: isMobile ? "max(6rem, calc(6rem + env(safe-area-inset-bottom)))" : "max(5.5rem, calc(5.5rem + env(safe-area-inset-bottom)))" }}>
       <div className="max-w-2xl mx-auto min-w-0">
         <header className="flex items-center gap-2 mb-4 sm:mb-6">
-          <Link href="/" className="p-1 -m-1 text-slate-400 hover:text-white min-h-[44px] min-w-[44px] flex items-center justify-center">
-            <Radar className="w-8 h-8 text-emerald-400" aria-hidden />
+          <Link href="/" className="p-1 -m-1 text-slate-500 hover:text-slate-900 min-h-[44px] min-w-[44px] flex items-center justify-center">
+            <Radar className="w-8 h-8 text-emerald-600" aria-hidden />
           </Link>
-          <h1 className="text-lg sm:text-xl font-bold truncate">生成报价链接</h1>
+          <h1 className="text-lg sm:text-xl font-bold truncate text-slate-900">生成报价链接</h1>
         </header>
 
         {/* 移动端：进度点 */}
@@ -321,7 +330,7 @@ export default function QuoteNewPage() {
             {[1, 2, 3, 4, 5].map((s) => (
               <span
                 key={s}
-                className={`h-2 rounded-full transition-all ${s === mobileStep ? "w-6 bg-emerald-500" : s < mobileStep ? "w-2 bg-emerald-500/60" : "w-2 bg-slate-600"}`}
+                className={`h-2 rounded-full transition-all ${s === mobileStep ? "w-6 bg-emerald-500" : s < mobileStep ? "w-2 bg-emerald-500/60" : "w-2 bg-slate-300"}`}
               />
             ))}
           </div>
@@ -330,32 +339,32 @@ export default function QuoteNewPage() {
         {/* Step 1: 贸易模式 */}
         <div className={isMobile && mobileStep !== 1 ? "hidden" : ""}>
         {/* 1. 贸易模式（最先选，决定后续展示哪些项） */}
-        <section className="mb-4 sm:mb-6 rounded-xl border border-slate-700 bg-slate-900/50 p-3 sm:p-4">
-          <h2 className="text-sm font-medium text-slate-300 mb-3">贸易模式</h2>
+        <section className="mb-4 sm:mb-6 rounded-2xl border border-slate-100 bg-slate-50 p-3 sm:p-4">
+          <h2 className="text-sm font-medium text-slate-700 mb-3">贸易模式</h2>
           <div className="flex gap-3">
             <button
               type="button"
               onClick={() => setTradeMode("1039")}
               className={`flex-1 rounded-xl border-2 px-4 py-3 text-left transition-colors min-h-[48px] ${
                 tradeMode === "1039"
-                  ? "border-emerald-500 bg-emerald-500/10 text-emerald-400"
-                  : "border-slate-600 bg-slate-800/50 text-slate-400 hover:border-slate-500 hover:text-slate-300"
+                  ? "border-emerald-500 bg-emerald-500/10 text-emerald-600"
+                  : "border-slate-200 bg-slate-50 text-slate-600 hover:border-slate-300 hover:text-slate-700"
               }`}
             >
               <span className="font-medium block">义乌 1039</span>
-              <span className="text-xs opacity-90 mt-0.5 block">市场采购，代理出口，含代理费/国内段/结汇系数</span>
+              <span className="text-xs opacity-90 mt-0.5 block text-slate-500">市场采购，代理出口，含代理费/国内段/结汇系数</span>
             </button>
             <button
               type="button"
               onClick={() => setTradeMode("general")}
               className={`flex-1 rounded-xl border-2 px-4 py-3 text-left transition-colors min-h-[48px] ${
                 tradeMode === "general"
-                  ? "border-emerald-500 bg-emerald-500/10 text-emerald-400"
-                  : "border-slate-600 bg-slate-800/50 text-slate-400 hover:border-slate-500 hover:text-slate-300"
+                  ? "border-emerald-500 bg-emerald-500/10 text-emerald-600"
+                  : "border-slate-200 bg-slate-50 text-slate-600 hover:border-slate-300 hover:text-slate-700"
               }`}
             >
               <span className="font-medium block">一般贸易</span>
-              <span className="text-xs opacity-90 mt-0.5 block">FOB = EXW ÷ 汇率，无需代理费/国内段</span>
+              <span className="text-xs opacity-90 mt-0.5 block text-slate-500">FOB = EXW ÷ 汇率，无需代理费/国内段</span>
             </button>
           </div>
         </section>
@@ -364,9 +373,9 @@ export default function QuoteNewPage() {
         {/* Step 3 之一：成本计算公式（仅 1039，桌面与移动步进均显示） */}
         <div className={isMobile && mobileStep !== 3 ? "hidden" : ""}>
         {tradeMode === "1039" && (
-          <section className="mb-4 sm:mb-6 rounded-xl border border-slate-700 bg-slate-900/50 p-3 sm:p-4">
-            <h2 className="text-sm font-medium text-emerald-400 mb-2">成本计算公式</h2>
-            <p className="text-slate-300 text-xs sm:text-sm font-mono mb-3 break-words">
+          <section className="mb-4 sm:mb-6 rounded-2xl border border-slate-100 bg-slate-50 p-3 sm:p-4">
+            <h2 className="text-sm font-medium text-emerald-600 mb-2">成本计算公式</h2>
+            <p className="text-slate-600 text-xs sm:text-sm font-mono mb-3 break-words">
               FOB (USD) = (EXW + 代理费 + 国内段 + 利润) ÷ (汇率 × 结汇系数)
             </p>
             <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 items-stretch sm:items-end">
@@ -378,7 +387,7 @@ export default function QuoteNewPage() {
                   min="0"
                   value={agentFeeOverride}
                   onChange={(e) => setAgentFeeOverride(e.target.value)}
-                  className="w-full sm:w-20 rounded-lg bg-slate-800 border border-slate-600 text-white px-3 py-3 sm:py-2 text-base sm:text-sm min-h-[48px] sm:min-h-0"
+                  className="w-full sm:w-20 rounded-lg bg-white border border-slate-200 text-slate-900 px-3 py-3 sm:py-2 text-base sm:text-sm min-h-[48px] sm:min-h-0 focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
                 />
               </div>
               <div className="min-w-0">
@@ -390,7 +399,7 @@ export default function QuoteNewPage() {
                   max="1"
                   value={settlementFactorOverride}
                   onChange={(e) => setSettlementFactorOverride(e.target.value)}
-                  className="w-full sm:w-20 rounded-lg bg-slate-800 border border-slate-600 text-white px-3 py-3 sm:py-2 text-base sm:text-sm min-h-[48px] sm:min-h-0"
+                  className="w-full sm:w-20 rounded-lg bg-white border border-slate-200 text-slate-900 px-3 py-3 sm:py-2 text-base sm:text-sm min-h-[48px] sm:min-h-0 focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
                 />
                 <p className="text-xs text-slate-500 mt-1">结汇时扣掉的手续/损耗，默认 0.998，一般不用改</p>
               </div>
@@ -398,16 +407,16 @@ export default function QuoteNewPage() {
           </section>
         )}
         {tradeMode === "general" && isMobile && (
-          <section className="mb-4 rounded-xl border border-slate-700 bg-slate-900/50 p-4 text-center">
-            <p className="text-slate-400 text-sm">一般贸易无需填写成本与国内段，直接下一步</p>
+          <section className="mb-4 rounded-2xl border border-slate-100 bg-slate-50 p-4 text-center">
+            <p className="text-slate-500 text-sm">一般贸易无需填写成本与国内段，直接下一步</p>
           </section>
         )}
         </div>
 
         {/* 智能粘贴区 - Step 2 */}
         <div className={isMobile && mobileStep !== 2 ? "hidden" : ""}>
-        <section className="mb-4 sm:mb-6 rounded-xl border border-slate-700 bg-slate-900/50 p-4">
-          <div className="flex items-center gap-2 mb-2 text-emerald-400">
+        <section className="mb-4 sm:mb-6 rounded-2xl border border-slate-100 bg-slate-50 p-4">
+          <div className="flex items-center gap-2 mb-2 text-emerald-600">
             <Sparkles className="w-4 h-4" />
             <span className="text-sm font-medium">智能粘贴</span>
           </div>
@@ -415,13 +424,13 @@ export default function QuoteNewPage() {
             placeholder="粘贴微信聊天、产品描述、工厂清单… 自动识别产品名、单价、客户名"
             value={paste}
             onChange={(e) => setPaste(e.target.value)}
-            className="w-full h-28 rounded-xl bg-slate-800 border border-slate-600 text-slate-200 placeholder-slate-500 p-3 text-base sm:text-sm resize-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent min-h-[120px]"
+            className="w-full h-28 rounded-xl bg-white border border-slate-200 text-slate-900 placeholder-slate-400 p-3 text-base sm:text-sm resize-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent min-h-[120px]"
           />
           <button
             type="button"
             onClick={handleParse}
             disabled={!paste.trim()}
-            className="mt-2 rounded-xl bg-slate-700 px-4 py-3 min-h-[48px] text-base sm:text-sm font-medium text-slate-200 hover:bg-slate-600 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="mt-2 rounded-xl bg-slate-100 px-4 py-3 min-h-[48px] text-base sm:text-sm font-medium text-slate-700 hover:bg-slate-200 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             解析并填入下方
           </button>
@@ -433,19 +442,19 @@ export default function QuoteNewPage() {
           {/* Step 2 续：产品与报价基础 */}
           <div className={isMobile && mobileStep !== 2 ? "hidden" : ""}>
           <div>
-            <label className="block text-sm text-slate-400 mb-1">产品名称 *</label>
+            <label className="block text-sm text-slate-600 mb-1">产品名称 *</label>
             <input
               type="text"
               value={productName}
               onChange={(e) => setProductName(e.target.value)}
               required
-              className="w-full rounded-xl bg-slate-800 border border-slate-600 text-white p-3 py-3 sm:py-2.5 text-base sm:text-sm min-h-[48px] sm:min-h-[44px] focus:ring-2 focus:ring-emerald-500"
+              className="w-full rounded-xl bg-white border border-slate-200 text-slate-900 p-3 py-3 sm:py-2.5 text-base sm:text-sm min-h-[48px] sm:min-h-[44px] focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
               placeholder="如：筋膜枪 2000mAh"
             />
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm text-slate-400 mb-1">EXW 单价 (元) *</label>
+              <label className="block text-sm text-slate-600 mb-1">EXW 单价 (元) *</label>
               <p className="text-xs text-slate-500 mb-1.5">请填含税出厂价；若工厂给的是不含税价，请先按「含税价 = 不含税价 × (1 + 税率)」换算后再填。</p>
               <input
                 type="number"
@@ -454,29 +463,29 @@ export default function QuoteNewPage() {
                 value={exwPrice}
                 onChange={(e) => setExwPrice(e.target.value)}
                 required
-                className="w-full rounded-xl bg-slate-800 border border-slate-600 text-white p-3 py-3 sm:py-2 text-base sm:text-sm min-h-[48px] sm:min-h-[44px] focus:ring-2 focus:ring-emerald-500"
+                className="w-full rounded-xl bg-white border border-slate-200 text-slate-900 p-3 py-3 sm:py-2 text-base sm:text-sm min-h-[48px] sm:min-h-[44px] focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
                 placeholder="出厂价"
               />
             </div>
             <div>
-              <label className="block text-sm text-slate-400 mb-1">利润率 (%)</label>
+              <label className="block text-sm text-slate-600 mb-1">利润率 (%)</label>
               <input
                 type="number"
                 step="0.1"
                 min="0"
                 value={profitMargin}
                 onChange={(e) => setProfitMargin(e.target.value)}
-                className="w-full rounded-xl bg-slate-800 border border-slate-600 text-white p-3 py-3 sm:py-2 text-base sm:text-sm min-h-[48px] sm:min-h-[44px] focus:ring-2 focus:ring-emerald-500"
+                className="w-full rounded-xl bg-white border border-slate-200 text-slate-900 p-3 py-3 sm:py-2 text-base sm:text-sm min-h-[48px] sm:min-h-[44px] focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
               />
             </div>
           </div>
           <div>
-            <label className="block text-sm text-slate-400 mb-1">客户名（可选）</label>
+            <label className="block text-sm text-slate-600 mb-1">客户名（可选）</label>
             <input
               type="text"
               value={customerName}
               onChange={(e) => setCustomerName(e.target.value)}
-              className="w-full rounded-xl bg-slate-800 border border-slate-600 text-white p-3 py-3 sm:py-2.5 text-base min-h-[48px] sm:min-h-0 focus:ring-2 focus:ring-emerald-500"
+              className="w-full rounded-xl bg-white border border-slate-200 text-slate-900 p-3 py-3 sm:py-2.5 text-base min-h-[48px] sm:min-h-0 focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
               placeholder="用于备注"
             />
           </div>
@@ -485,8 +494,8 @@ export default function QuoteNewPage() {
           {/* Step 3 之二：箱规与国内段（仅 1039） */}
           <div className={isMobile && mobileStep !== 3 ? "hidden" : ""}>
           {tradeMode === "1039" && (
-            <div className="rounded-xl border border-slate-700 bg-slate-900/30 p-4 space-y-3">
-              <h3 className="text-sm font-medium text-slate-300">箱规与重量（可选，用于按重/按方计国内段）</h3>
+            <div className="rounded-xl border border-slate-200 bg-slate-50 p-4 space-y-3">
+              <h3 className="text-sm font-medium text-slate-700">箱规与重量（可选，用于按重/按方计国内段）</h3>
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="block text-xs text-slate-500 mb-0.5">产品数量（件）</label>
@@ -497,7 +506,7 @@ export default function QuoteNewPage() {
                     value={orderQuantity}
                     onChange={(e) => setOrderQuantity(e.target.value)}
                     placeholder="不填按单价"
-                    className="w-full rounded-lg bg-slate-800 border border-slate-600 text-white px-2 py-1.5 text-sm"
+                    className="w-full rounded-lg bg-white border border-slate-200 text-slate-900 px-2 py-1.5 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
                   />
                 </div>
                 <div>
@@ -509,7 +518,7 @@ export default function QuoteNewPage() {
                     value={pcsPerCarton}
                     onChange={(e) => setPcsPerCarton(e.target.value)}
                     placeholder="不填按单箱"
-                    className="w-full rounded-lg bg-slate-800 border border-slate-600 text-white px-2 py-1.5 text-sm"
+                    className="w-full rounded-lg bg-white border border-slate-200 text-slate-900 px-2 py-1.5 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
                   />
                 </div>
               </div>
@@ -526,7 +535,7 @@ export default function QuoteNewPage() {
                     value={boxL}
                     onChange={(e) => setBoxL(e.target.value)}
                     placeholder="—"
-                    className="w-full rounded-lg bg-slate-800 border border-slate-600 text-white px-2 py-1.5 text-sm"
+                    className="w-full rounded-lg bg-white border border-slate-200 text-slate-900 px-2 py-1.5 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
                   />
                 </div>
                 <div>
@@ -538,7 +547,7 @@ export default function QuoteNewPage() {
                     value={boxW}
                     onChange={(e) => setBoxW(e.target.value)}
                     placeholder="—"
-                    className="w-full rounded-lg bg-slate-800 border border-slate-600 text-white px-2 py-1.5 text-sm"
+                    className="w-full rounded-lg bg-white border border-slate-200 text-slate-900 px-2 py-1.5 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
                   />
                 </div>
                 <div>
@@ -550,7 +559,7 @@ export default function QuoteNewPage() {
                     value={boxH}
                     onChange={(e) => setBoxH(e.target.value)}
                     placeholder="—"
-                    className="w-full rounded-lg bg-slate-800 border border-slate-600 text-white px-2 py-1.5 text-sm"
+                    className="w-full rounded-lg bg-white border border-slate-200 text-slate-900 px-2 py-1.5 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
                   />
                 </div>
               </div>
@@ -563,7 +572,7 @@ export default function QuoteNewPage() {
                   value={grossWeight}
                   onChange={(e) => setGrossWeight(e.target.value)}
                   placeholder="—"
-                  className="w-24 rounded-lg bg-slate-800 border border-slate-600 text-white px-2 py-1.5 text-sm"
+                  className="w-24 rounded-lg bg-white border border-slate-200 text-slate-900 px-2 py-1.5 text-sm"
                 />
               </div>
               <div>
@@ -571,7 +580,7 @@ export default function QuoteNewPage() {
                 <select
                   value={boxAllowanceCm}
                   onChange={(e) => setBoxAllowanceCm(Number(e.target.value))}
-                  className="rounded-lg bg-slate-800 border border-slate-600 text-white px-2 py-1.5 text-sm"
+                  className="rounded-lg bg-white border border-slate-200 text-slate-900 px-2 py-1.5 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
                 >
                   <option value={0}>不加</option>
                   <option value={1}>各加 1 cm</option>
@@ -600,7 +609,7 @@ export default function QuoteNewPage() {
                     name="domesticChargeType"
                     checked={domesticChargeType === "fixed"}
                     onChange={() => setDomesticChargeType("fixed")}
-                    className="border-slate-600 bg-slate-800 text-emerald-500"
+                    className="border-slate-300 bg-white text-emerald-600"
                   />
                   固定（发货地）
                 </label>
@@ -610,7 +619,7 @@ export default function QuoteNewPage() {
                     name="domesticChargeType"
                     checked={domesticChargeType === "by_weight"}
                     onChange={() => setDomesticChargeType("by_weight")}
-                    className="border-slate-600 bg-slate-800 text-emerald-500"
+                    className="border-slate-300 bg-white text-emerald-600"
                   />
                   按重
                 </label>
@@ -620,7 +629,7 @@ export default function QuoteNewPage() {
                     name="domesticChargeType"
                     checked={domesticChargeType === "by_volume"}
                     onChange={() => setDomesticChargeType("by_volume")}
-                    className="border-slate-600 bg-slate-800 text-emerald-500"
+                    className="border-slate-300 bg-white text-emerald-600"
                   />
                   按体积
                 </label>
@@ -630,7 +639,7 @@ export default function QuoteNewPage() {
                     name="domesticChargeType"
                     checked={domesticChargeType === "per_container"}
                     onChange={() => setDomesticChargeType("per_container")}
-                    className="border-slate-600 bg-slate-800 text-emerald-500"
+                    className="border-slate-300 bg-white text-emerald-600"
                   />
                   按柜
                 </label>
@@ -645,7 +654,7 @@ export default function QuoteNewPage() {
                         name="shipFrom"
                         checked={shipFrom === "yiwu"}
                         onChange={() => setShipFrom("yiwu")}
-                        className="border-slate-600 bg-slate-800 text-emerald-500"
+                        className="border-slate-300 bg-white text-emerald-600"
                       />
                       外贸公司（义乌）发出（含义乌→港口拖车 120 元）
                     </label>
@@ -655,7 +664,7 @@ export default function QuoteNewPage() {
                         name="shipFrom"
                         checked={shipFrom === "factory"}
                         onChange={() => setShipFrom("factory")}
-                        className="border-slate-600 bg-slate-800 text-emerald-500"
+                        className="border-slate-300 bg-white text-emerald-600"
                       />
                       工厂/供应商直发港口
                     </label>
@@ -672,7 +681,7 @@ export default function QuoteNewPage() {
                         value={domesticCny}
                         onChange={(e) => setDomesticCny(e.target.value)}
                         placeholder="不填则按 0 元计"
-                        className="w-32 rounded-lg bg-slate-800 border border-slate-600 text-white px-3 py-2 text-sm"
+                        className="w-32 rounded-lg bg-white border border-slate-200 text-slate-900 px-3 py-2 text-sm"
                       />
                     </div>
                   )}
@@ -685,7 +694,7 @@ export default function QuoteNewPage() {
                     <select
                       value={volumetricDivisor}
                       onChange={(e) => setVolumetricDivisor(Number(e.target.value))}
-                      className="rounded-lg bg-slate-800 border border-slate-600 text-white px-2 py-1.5 text-sm"
+                      className="rounded-lg bg-white border border-slate-200 text-slate-900 px-2 py-1.5 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
                     >
                       <option value={6000}>6000（空运）</option>
                       <option value={5000}>5000（海运）</option>
@@ -700,7 +709,7 @@ export default function QuoteNewPage() {
                       value={domesticYuanPerTon}
                       onChange={(e) => setDomesticYuanPerTon(e.target.value)}
                       placeholder="国内段单价"
-                      className="w-28 rounded-lg bg-slate-800 border border-slate-600 text-white px-2 py-1.5 text-sm"
+                      className="w-28 rounded-lg bg-white border border-slate-200 text-slate-900 px-2 py-1.5 text-sm"
                     />
                   </div>
                   {domesticCnyForPreview != null && domesticCnyForPreview > 0 && (
@@ -719,7 +728,7 @@ export default function QuoteNewPage() {
                       value={domesticYuanPerCbm}
                       onChange={(e) => setDomesticYuanPerCbm(e.target.value)}
                       placeholder="国内段单价"
-                      className="w-28 rounded-lg bg-slate-800 border border-slate-600 text-white px-2 py-1.5 text-sm"
+                      className="w-28 rounded-lg bg-white border border-slate-200 text-slate-900 px-2 py-1.5 text-sm"
                     />
                   </div>
                   {domesticCnyForPreview != null && domesticCnyForPreview > 0 && (
@@ -737,7 +746,7 @@ export default function QuoteNewPage() {
                     value={domesticYuanPerContainer}
                     onChange={(e) => setDomesticYuanPerContainer(e.target.value)}
                     placeholder="国内段一柜价"
-                    className="w-32 rounded-lg bg-slate-800 border border-slate-600 text-white px-2 py-1.5 text-sm"
+                    className="w-32 rounded-lg bg-white border border-slate-200 text-slate-900 px-2 py-1.5 text-sm"
                   />
                 </div>
               )}
@@ -747,7 +756,7 @@ export default function QuoteNewPage() {
 
           {/* Step 4：品牌、汇率与选项 */}
           <div className={isMobile && mobileStep !== 4 ? "hidden" : ""}>
-          <div className="rounded-xl border border-slate-700 bg-slate-900/30 p-4 space-y-3">
+          <div className="rounded-xl border border-slate-200 bg-slate-50 p-4 space-y-3">
             <h3 className="text-sm font-medium text-slate-300">品牌 / Logo（发给客户时显示）</h3>
             <div>
               <label className="block text-xs text-slate-500 mb-1">公司 / 品牌名（可选）</label>
@@ -755,7 +764,7 @@ export default function QuoteNewPage() {
                 type="text"
                 value={companyName}
                 onChange={(e) => setCompanyName(e.target.value)}
-                className="w-full rounded-xl bg-slate-800 border border-slate-600 text-white p-3 py-3 sm:p-2.5 text-base sm:text-sm min-h-[48px] sm:min-h-0 focus:ring-2 focus:ring-emerald-500"
+                className="w-full rounded-xl bg-white border border-slate-200 text-slate-900 p-3 py-3 sm:p-2.5 text-base sm:text-sm min-h-[48px] sm:min-h-0 focus:ring-2 focus:ring-emerald-500"
                 placeholder="如：ABC Trading Co."
               />
             </div>
@@ -765,7 +774,7 @@ export default function QuoteNewPage() {
                 type="url"
                 value={companyLogoUrl}
                 onChange={(e) => setCompanyLogoUrl(e.target.value)}
-                className="w-full rounded-xl bg-slate-800 border border-slate-600 text-white p-3 py-3 sm:p-2.5 text-base sm:text-sm min-h-[48px] sm:min-h-0 focus:ring-2 focus:ring-emerald-500"
+                className="w-full rounded-xl bg-white border border-slate-200 text-slate-900 p-3 py-3 sm:p-2.5 text-base sm:text-sm min-h-[48px] sm:min-h-0 focus:ring-2 focus:ring-emerald-500"
                 placeholder="https://... 或上传到图床后粘贴链接"
               />
             </div>
@@ -778,7 +787,7 @@ export default function QuoteNewPage() {
                 step="0.01"
                 value={exchangeRate}
                 onChange={(e) => setExchangeRate(e.target.value)}
-                className="w-20 rounded-xl bg-slate-800 border border-slate-600 text-white px-3 py-3 sm:py-2 min-h-[48px] sm:min-h-0"
+                className="w-20 rounded-xl bg-white border border-slate-200 text-slate-900 px-3 py-3 sm:py-2 min-h-[48px] sm:min-h-0"
               />
             </div>
             <label className="flex items-center gap-2 text-sm text-slate-400 cursor-pointer min-h-[44px] py-1 sm:py-0">
@@ -786,7 +795,7 @@ export default function QuoteNewPage() {
                 type="checkbox"
                 checked={lockRate}
                 onChange={(e) => setLockRate(e.target.checked)}
-                className="rounded border-slate-600 bg-slate-800 text-emerald-500"
+                className="rounded border-slate-300 bg-white text-emerald-600"
               />
               锁定汇率（报价页展示锚定汇率）
             </label>
@@ -795,7 +804,7 @@ export default function QuoteNewPage() {
                 type="checkbox"
                 checked={accessControlled}
                 onChange={(e) => setAccessControlled(e.target.checked)}
-                className="rounded border-slate-600 bg-slate-800 text-emerald-500"
+                className="rounded border-slate-300 bg-white text-emerald-600"
               />
               受控访问（客户申请后才显示价格）
             </label>
@@ -804,7 +813,7 @@ export default function QuoteNewPage() {
 
           {/* Step 5：到岸价、核查与提交 */}
           <div className={isMobile && mobileStep !== 5 ? "hidden" : ""}>
-          <div className="rounded-xl border border-slate-700 bg-slate-900/30 p-3">
+          <div className="rounded-xl border border-slate-200 bg-slate-50 p-3">
             <button
               type="button"
               onClick={() => setShowCfrCif(!showCfrCif)}
@@ -814,7 +823,7 @@ export default function QuoteNewPage() {
               到岸价（可选）CFR / CIF
             </button>
             {showCfrCif && (
-              <div className="mt-3 space-y-3 pt-3 border-t border-slate-700">
+              <div className="mt-3 space-y-3 pt-3 border-t border-slate-200">
                 <p className="text-xs text-slate-500 font-medium">海运方式</p>
                 <div className="flex flex-wrap gap-3">
                   <label className="flex items-center gap-1.5 cursor-pointer min-h-[44px] py-1 sm:py-0">
@@ -823,7 +832,7 @@ export default function QuoteNewPage() {
                       name="freightType"
                       checked={freightType === "lcl"}
                       onChange={() => setFreightType("lcl")}
-                      className="rounded-full border-slate-600 bg-slate-800 text-emerald-500"
+                      className="rounded-full border-slate-300 bg-white text-emerald-600"
                     />
                     <span className="text-sm text-slate-300">散货（LCL）</span>
                   </label>
@@ -833,7 +842,7 @@ export default function QuoteNewPage() {
                       name="freightType"
                       checked={freightType === "fcl"}
                       onChange={() => setFreightType("fcl")}
-                      className="rounded-full border-slate-600 bg-slate-800 text-emerald-500"
+                      className="rounded-full border-slate-300 bg-white text-emerald-600"
                     />
                     <span className="text-sm text-slate-300">整柜（FCL）</span>
                   </label>
@@ -843,7 +852,7 @@ export default function QuoteNewPage() {
                       name="freightType"
                       checked={freightType === "manual"}
                       onChange={() => setFreightType("manual")}
-                      className="rounded-full border-slate-600 bg-slate-800 text-emerald-500"
+                      className="rounded-full border-slate-300 bg-white text-emerald-600"
                     />
                     <span className="text-sm text-slate-300">直接填运费</span>
                   </label>
@@ -864,7 +873,7 @@ export default function QuoteNewPage() {
                           value={seaYuanPerTon}
                           onChange={(e) => setSeaYuanPerTon(e.target.value)}
                           placeholder="货代价格表"
-                          className="w-28 rounded-lg bg-slate-800 border border-slate-600 text-white px-2 py-1.5 text-sm"
+                          className="w-28 rounded-lg bg-white border border-slate-200 text-slate-900 px-2 py-1.5 text-sm"
                         />
                       </div>
                       {seaChargeableTon > 0 && seaFreightCny > 0 && (
@@ -887,7 +896,7 @@ export default function QuoteNewPage() {
                         <select
                           value={containerType}
                           onChange={(e) => setContainerType(e.target.value as "20GP" | "40GP" | "40HQ")}
-                          className="rounded-lg bg-slate-800 border border-slate-600 text-white px-2 py-1.5 text-sm"
+                          className="rounded-lg bg-white border border-slate-200 text-slate-900 px-2 py-1.5 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
                         >
                           <option value="20GP">20GP</option>
                           <option value="40GP">40GP</option>
@@ -903,7 +912,7 @@ export default function QuoteNewPage() {
                           value={containerCount}
                           onChange={(e) => setContainerCount(e.target.value)}
                           placeholder="1"
-                          className="w-20 rounded-lg bg-slate-800 border border-slate-600 text-white px-2 py-1.5 text-sm"
+                          className="w-20 rounded-lg bg-white border border-slate-200 text-slate-900 px-2 py-1.5 text-sm"
                         />
                       </div>
                       <div>
@@ -915,7 +924,7 @@ export default function QuoteNewPage() {
                           value={yuanPerContainer}
                           onChange={(e) => setYuanPerContainer(e.target.value)}
                           placeholder="货代报价"
-                          className="w-28 rounded-lg bg-slate-800 border border-slate-600 text-white px-2 py-1.5 text-sm"
+                          className="w-28 rounded-lg bg-white border border-slate-200 text-slate-900 px-2 py-1.5 text-sm"
                         />
                       </div>
                       {seaFreightCnyFcl > 0 && (
@@ -940,7 +949,7 @@ export default function QuoteNewPage() {
                         value={freightUsd}
                         onChange={(e) => setFreightUsd(e.target.value)}
                         placeholder="货代报价"
-                        className="w-28 rounded-lg bg-slate-800 border border-slate-600 text-white px-2 py-1.5 text-sm"
+                        className="w-28 rounded-lg bg-white border border-slate-200 text-slate-900 px-2 py-1.5 text-sm"
                       />
                     </div>
                   </div>
@@ -958,7 +967,7 @@ export default function QuoteNewPage() {
                       value={surchargeUsd}
                       onChange={(e) => setSurchargeUsd(e.target.value)}
                       placeholder="0"
-                      className="w-24 rounded-lg bg-slate-800 border border-slate-600 text-white px-2 py-1.5 text-sm"
+                      className="w-24 rounded-lg bg-white border border-slate-200 text-slate-900 px-2 py-1.5 text-sm"
                     />
                   </div>
                 </div>
@@ -974,7 +983,7 @@ export default function QuoteNewPage() {
                       value={insuranceUsd}
                       onChange={(e) => setInsuranceUsd(e.target.value)}
                       placeholder="0"
-                      className="w-24 rounded-lg bg-slate-800 border border-slate-600 text-white px-2 py-1.5 text-sm"
+                      className="w-24 rounded-lg bg-white border border-slate-200 text-slate-900 px-2 py-1.5 text-sm"
                     />
                   </div>
                 </div>
@@ -992,7 +1001,7 @@ export default function QuoteNewPage() {
           </div>
 
           {/* 核查：成本明细 + 报价明细（提交前核对） */}
-          <section className="rounded-xl border border-slate-600 bg-slate-900/40 p-3 sm:p-4 space-y-4 min-w-0">
+          <section className="rounded-xl border border-slate-200 bg-slate-50 p-3 sm:p-4 space-y-4 min-w-0">
             <h2 className="text-sm font-medium text-slate-300">提交前核查</h2>
 
             <div>
@@ -1043,7 +1052,7 @@ export default function QuoteNewPage() {
         {/* 移动端：固定底栏 上一步/下一步 或 生成报价链接 */}
         {isMobile && (
           <div
-            className="fixed bottom-0 left-0 right-0 z-[60] flex items-center gap-3 border-t border-slate-800 bg-slate-950/95 backdrop-blur px-4 py-3"
+            className="fixed bottom-0 left-0 right-0 z-[60] flex items-center gap-3 border-t border-slate-200 bg-white/95 backdrop-blur px-4 py-3"
             style={{
               paddingBottom: "max(0.75rem, env(safe-area-inset-bottom))",
               paddingLeft: "max(1rem, env(safe-area-inset-left))",
@@ -1054,7 +1063,7 @@ export default function QuoteNewPage() {
               <button
                 type="button"
                 onClick={() => setMobileStep((s) => s - 1)}
-                className="flex items-center justify-center gap-1 rounded-xl border border-slate-600 bg-slate-800 px-4 py-3 min-h-[48px] text-slate-300 font-medium text-base flex-1 sm:flex-initial"
+                className="flex items-center justify-center gap-1 rounded-xl border border-slate-200 bg-slate-100 px-4 py-3 min-h-[48px] text-slate-700 font-medium text-base flex-1 sm:flex-initial"
               >
                 <ChevronLeft className="w-5 h-5" aria-hidden />
                 上一步
@@ -1088,22 +1097,31 @@ export default function QuoteNewPage() {
         {generatedLink && (
           <section className="mt-6 rounded-xl border border-emerald-700 bg-emerald-950/30 p-4">
             <p className="text-sm text-slate-400 mb-2">专业报价链接（发给客户即可，打开即被记录）</p>
-            <div className="flex gap-2">
+            <div className="flex flex-wrap gap-2">
               <input
                 type="text"
                 readOnly
                 value={generatedLink}
-                className="flex-1 rounded-lg bg-slate-800 border border-slate-600 text-slate-200 p-3 text-sm"
+                className="flex-1 min-w-0 rounded-lg bg-white border border-slate-200 text-slate-900 p-3 text-sm"
               />
               <button
                 type="button"
                 onClick={copyLink}
-                className="rounded-lg bg-emerald-600 px-4 py-3 text-white hover:bg-emerald-500 flex items-center gap-2"
+                className="rounded-lg bg-emerald-600 px-4 py-3 text-white hover:bg-emerald-500 flex items-center gap-2 min-h-[44px]"
               >
                 {copied ? <Check className="w-5 h-5" /> : <Copy className="w-5 h-5" />}
-                {copied ? "已复制" : "复制"}
+                {copied ? "已复制" : "复制链接"}
+              </button>
+              <button
+                type="button"
+                onClick={copyWithScript}
+                className="rounded-lg border border-slate-200 bg-white px-4 py-3 text-slate-700 hover:bg-slate-100 flex items-center gap-2 min-h-[44px] text-sm"
+              >
+                <Copy className="w-4 h-4" />
+                复制带话术
               </button>
             </div>
+            <p className="text-xs text-slate-500 mt-2">「复制带话术」可直接粘贴到微信/WhatsApp，含产品名、价格与链接</p>
             <Link href="/dashboard" className="inline-block mt-3 text-sm text-emerald-400 hover:underline">
               去仪表盘查看动态 →
             </Link>

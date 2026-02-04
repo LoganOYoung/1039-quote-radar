@@ -6,6 +6,7 @@ import { logQuoteView, getVisitorInfo } from "@/lib/quote-actions";
 import { notifyQuoteViewed } from "@/lib/notify";
 import TrackDuration from "./TrackDuration";
 import PriceSection from "./PriceSection";
+import QuoteExportActions from "./QuoteExportActions";
 
 type Props = { params: Promise<{ id: string }> };
 
@@ -17,10 +18,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     .eq("short_id", shortId)
     .single();
   if (!quote) return { title: "Quotation" };
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://1039-quote-radar.vercel.app";
   const title = quote.company_name
     ? `${quote.product_name} - ${quote.company_name}`
     : `${quote.product_name} - $${quote.fob_price_usd != null ? Number(quote.fob_price_usd).toFixed(2) : ""} USD`;
   const description = `FOB Price: $${quote.fob_price_usd != null ? Number(quote.fob_price_usd).toFixed(2) : "—"} USD · 1039 Quote Radar`;
+  const ogImageUrl = `${siteUrl.replace(/\/$/, "")}/api/og/quote/${shortId}`;
   return {
     title,
     description,
@@ -28,8 +31,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       title,
       description,
       type: "website",
+      images: [{ url: ogImageUrl, width: 1200, height: 630, alt: title }],
     },
-    twitter: { card: "summary", title, description },
+    twitter: { card: "summary_large_image", title, description, images: [ogImageUrl] },
   };
 }
 
@@ -76,11 +80,12 @@ export default async function ViewQuotePage({ params }: Props) {
     : null;
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-slate-100 via-white to-slate-50 text-gray-900 overflow-x-hidden">
-      <TrackDuration quoteId={quote.id} />
+    <main className="min-h-screen bg-gradient-to-b from-slate-100 via-white to-slate-50 text-gray-900 overflow-x-hidden print:bg-white">
+      <div className="print:hidden"><TrackDuration quoteId={quote.id} /></div>
       <div className="max-w-lg mx-auto px-3 sm:px-6 py-6 sm:py-12 min-w-0">
+        <QuoteExportActions>
         {/* Header: gradient band + logo & company */}
-        <header className="rounded-t-2xl overflow-hidden bg-gradient-to-r from-teal-600 via-emerald-600 to-cyan-600 shadow-lg">
+        <header className="rounded-t-2xl overflow-hidden bg-gradient-to-r from-teal-600 via-emerald-600 to-cyan-600 shadow-lg print:rounded-t-xl">
           <div className="px-6 py-6 sm:py-8 flex flex-col items-center text-center">
             {companyLogoUrl ? (
               <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-xl bg-white/95 shadow-md flex items-center justify-center overflow-hidden mb-3 shrink-0">
@@ -152,8 +157,9 @@ export default async function ViewQuotePage({ params }: Props) {
             </p>
           </div>
         </article>
+        </QuoteExportActions>
 
-        <footer className="mt-8 text-center text-xs text-slate-400 space-y-1">
+        <footer className="mt-8 text-center text-xs text-slate-400 space-y-1 print:mt-4">
           <p>Viewing of this page may be recorded for security.</p>
           <p>Powered by 1039 Quote Radar</p>
         </footer>

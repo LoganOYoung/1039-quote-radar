@@ -37,37 +37,34 @@ export default function ShareCardDownload({ productName, fobPriceUsd, customerNa
     <div className="max-w-sm mx-auto">
       <div
         ref={cardRef}
-        className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm"
+        className="rounded-2xl overflow-hidden bg-white shadow-lg border border-slate-100"
         style={{ width: 375 }}
       >
-        <h2 className="text-lg font-semibold text-gray-800 border-b border-gray-200 pb-2 mb-4">
-          Quotation
-        </h2>
-        <dl className="space-y-2 text-sm">
-          <div>
-            <dt className="text-gray-500 uppercase tracking-wide text-xs">Product</dt>
-            <dd className="font-medium text-gray-900">{productName}</dd>
-          </div>
-          <div>
-            <dt className="text-gray-500 uppercase tracking-wide text-xs">FOB Price (USD)</dt>
-            <dd className="font-medium text-lg text-gray-900">
+        <div className="bg-gradient-to-r from-teal-600 via-emerald-600 to-cyan-600 px-6 py-5">
+          <p className="text-teal-100 text-xs font-medium uppercase tracking-wide">Price Quotation</p>
+          <h2 className="text-xl font-bold text-white mt-1 truncate">{productName}</h2>
+        </div>
+        <div className="p-6">
+          <div className="flex items-baseline gap-2">
+            <span className="text-slate-500 text-sm">FOB</span>
+            <span className="text-2xl font-bold text-teal-600">
               $ {fobPriceUsd != null ? Number(fobPriceUsd).toFixed(2) : "—"}
-            </dd>
+            </span>
+            <span className="text-slate-500 text-sm">USD</span>
           </div>
           {customerName && (
-            <div>
-              <dt className="text-gray-500 uppercase tracking-wide text-xs">Prepared for</dt>
-              <dd className="text-gray-700">{customerName}</dd>
-            </div>
+            <p className="mt-3 text-sm text-slate-500">
+              Prepared for <span className="text-slate-700 font-medium">{customerName}</span>
+            </p>
           )}
-        </dl>
-        <p className="mt-4 text-xs text-gray-400">Powered by 1039 Quote Radar</p>
+          <p className="mt-4 text-xs text-slate-400">详情点击链接 · Powered by 1039 Quote Radar</p>
+        </div>
       </div>
       <button
         type="button"
         onClick={handleDownload}
         disabled={loading}
-        className="mt-4 w-full rounded-lg bg-emerald-600 py-3 px-4 text-white font-medium hover:bg-emerald-500 disabled:opacity-50 flex items-center justify-center gap-2"
+        className="mt-4 w-full rounded-xl bg-emerald-600 py-3 px-4 min-h-[48px] text-white font-medium hover:bg-emerald-500 disabled:opacity-50 flex items-center justify-center gap-2"
       >
         <Download className="w-5 h-5" />
         {loading ? "生成中…" : "保存为图片"}

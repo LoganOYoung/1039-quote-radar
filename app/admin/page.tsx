@@ -18,8 +18,8 @@ export default async function AdminPage() {
 
   if (qErr || lErr) {
     return (
-      <main className="min-h-screen bg-slate-950 text-slate-100 p-6">
-        <p className="text-red-400">加载失败：{qErr?.message || lErr?.message}</p>
+      <main className="min-h-screen bg-white text-slate-800 p-6">
+        <p className="text-red-600">加载失败：{qErr?.message || lErr?.message}</p>
       </main>
     );
   }
@@ -58,38 +58,38 @@ export default async function AdminPage() {
     .slice(0, 30);
 
   return (
-    <main className="min-h-screen bg-slate-950 text-slate-100 p-4 md:p-6">
+    <main className="min-h-screen bg-white text-slate-800 p-4 md:p-6">
       <div className="max-w-4xl mx-auto">
         <header className="flex items-center justify-between mb-6">
-          <Link href="/" className="flex items-center gap-2 text-slate-400 hover:text-white">
-            <Radar className="w-8 h-8 text-emerald-400" />
+          <Link href="/" className="flex items-center gap-2 text-slate-500 hover:text-slate-900">
+            <Radar className="w-8 h-8 text-emerald-600" />
             <span className="text-xl font-bold">1039报价雷达</span>
           </Link>
           <Link
             href="/dashboard"
-            className="text-sm text-slate-400 hover:text-white"
+            className="text-sm text-slate-500 hover:text-slate-700"
           >
             返回仪表盘
           </Link>
         </header>
 
-        <h1 className="text-2xl font-bold text-slate-100 mb-6 flex items-center gap-2">
-          <BarChart3 className="w-7 h-7 text-emerald-400" />
+        <h1 className="text-2xl font-bold text-slate-900 mb-6 flex items-center gap-2">
+          <BarChart3 className="w-7 h-7 text-emerald-600" />
           后台数据看板
         </h1>
-        <p className="text-slate-400 text-sm mb-8">
+        <p className="text-slate-500 text-sm mb-8">
           品类×价格×地域聚合（脱敏，仅作趋势参考）
         </p>
 
         <section className="mb-10">
-          <h2 className="text-lg font-semibold text-slate-200 mb-4 flex items-center gap-2">
-            <Package className="w-5 h-5 text-emerald-400" />
+          <h2 className="text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2">
+            <Package className="w-5 h-5 text-emerald-600" />
             品类 × 报价数 × 平均 FOB 价
           </h2>
-          <div className="rounded-xl border border-slate-700 bg-slate-900/50 overflow-hidden">
+          <div className="rounded-xl border border-slate-200 bg-slate-50 overflow-hidden">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-slate-700 text-slate-400 text-left">
+                <tr className="border-b border-slate-200 text-slate-500 text-left">
                   <th className="p-3 font-medium">产品/品类</th>
                   <th className="p-3 font-medium">报价数</th>
                   <th className="p-3 font-medium">平均 FOB (USD)</th>
@@ -97,12 +97,12 @@ export default async function AdminPage() {
               </thead>
               <tbody>
                 {productRows.map((row) => (
-                  <tr key={row.name} className="border-b border-slate-700/50">
-                    <td className="p-3 text-slate-200 truncate max-w-[200px]" title={row.name}>
+                  <tr key={row.name} className="border-b border-slate-100">
+                    <td className="p-3 text-slate-800 truncate max-w-[200px]" title={row.name}>
                       {row.name}
                     </td>
-                    <td className="p-3 text-slate-300">{row.count}</td>
-                    <td className="p-3 text-emerald-400">
+                    <td className="p-3 text-slate-600">{row.count}</td>
+                    <td className="p-3 text-emerald-600">
                       {row.avgFob != null ? row.avgFob.toFixed(2) : "—"}
                     </td>
                   </tr>
@@ -113,23 +113,23 @@ export default async function AdminPage() {
         </section>
 
         <section>
-          <h2 className="text-lg font-semibold text-slate-200 mb-4 flex items-center gap-2">
-            <MapPin className="w-5 h-5 text-emerald-400" />
+          <h2 className="text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2">
+            <MapPin className="w-5 h-5 text-emerald-600" />
             访问地域分布
           </h2>
-          <div className="rounded-xl border border-slate-700 bg-slate-900/50 overflow-hidden">
+          <div className="rounded-xl border border-slate-200 bg-slate-50 overflow-hidden">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-slate-700 text-slate-400 text-left">
+                <tr className="border-b border-slate-200 text-slate-500 text-left">
                   <th className="p-3 font-medium">地域</th>
                   <th className="p-3 font-medium">访问次数</th>
                 </tr>
               </thead>
               <tbody>
                 {cityRows.map(([city, count]) => (
-                  <tr key={city} className="border-b border-slate-700/50">
-                    <td className="p-3 text-slate-200">{city}</td>
-                    <td className="p-3 text-slate-300">{count}</td>
+                  <tr key={city} className="border-b border-slate-100">
+                    <td className="p-3 text-slate-800">{city}</td>
+                    <td className="p-3 text-slate-600">{count}</td>
                   </tr>
                 ))}
               </tbody>

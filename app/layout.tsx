@@ -7,6 +7,11 @@ export const metadata: Metadata = {
   title: "1039报价雷达",
   description: "让你的报价单会说话 — 客户点开链接，实时查看动态",
   manifest: "/manifest.webmanifest",
+  openGraph: {
+    title: "1039报价雷达",
+    description: "报价可防、可追踪，客户一点开你都知道。生成报价链接，锁定汇率，受控访问。",
+    type: "website",
+  },
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
