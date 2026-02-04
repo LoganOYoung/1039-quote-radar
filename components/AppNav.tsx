@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Home, LayoutDashboard, FileText } from "lucide-react";
@@ -12,10 +13,17 @@ const navItems = [
 
 export default function AppNav() {
   const pathname = usePathname();
+  const [isNarrow, setIsNarrow] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 639px)");
+    const update = () => setIsNarrow(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
   const showNav =
-    pathname === "/" ||
-    pathname === "/dashboard" ||
-    pathname === "/quote/new";
+    (pathname === "/" || pathname === "/dashboard" || pathname === "/quote/new") &&
+    !(pathname === "/quote/new" && isNarrow);
 
   if (!showNav) return null;
 
