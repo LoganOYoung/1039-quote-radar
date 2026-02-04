@@ -1,0 +1,25 @@
+{
+  "name": "1039报价雷达",
+  "short_name": "报价雷达",
+  "description": "让你的报价单会说话 — 客户点开链接，实时查看动态",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#020617",
+  "theme_color": "#064e3b",
+  "scope": "/",
+  "icons": [
+    {
+      "src": "/icon",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

@@ -3,7 +3,7 @@ import { Radar, FileText, LayoutDashboard, Lock, TrendingUp, Shield } from "luci
 
 export default function HomePage() {
   return (
-    <main className="min-h-screen bg-slate-950 text-slate-100 flex flex-col items-center justify-center p-4 sm:p-6">
+    <main className="min-h-screen bg-slate-950 text-slate-100 flex flex-col items-center justify-center p-4 sm:p-6" style={{ paddingBottom: "max(5.5rem, calc(5.5rem + env(safe-area-inset-bottom)))" }}>
       {/* 首屏：移动端优先，主 CTA 一屏内可见 */}
       <div className="w-full max-w-lg flex flex-col items-center text-center space-y-6 sm:space-y-8">
         <div className="flex items-center justify-center gap-2">
@@ -44,6 +44,10 @@ export default function HomePage() {
 
         <p className="text-slate-500 text-sm sm:text-xs">
           粘贴截图或文字，一键生成专业报价链接；客户点开，你秒知道。
+        </p>
+
+        <p className="text-slate-500 text-xs">
+          像 App 一样用：浏览器打开本页后，选择「安装应用」或「添加到主屏幕」即可。
         </p>
 
         {/* 双 CTA：移动端大按钮、全宽、≥44px 高，间距防误触 */}

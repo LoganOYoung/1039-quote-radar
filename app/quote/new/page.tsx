@@ -53,6 +53,10 @@ export default function QuoteNewPage() {
   const [yuanPerContainer, setYuanPerContainer] = useState("");
   const [companyName, setCompanyName] = useState("");
   const [companyLogoUrl, setCompanyLogoUrl] = useState("");
+  const [orderQuantity, setOrderQuantity] = useState("");
+  const [pcsPerCarton, setPcsPerCarton] = useState("");
+  const [agentFeeOverride, setAgentFeeOverride] = useState("80");
+  const [settlementFactorOverride, setSettlementFactorOverride] = useState("0.998");
   const [generatedLink, setGeneratedLink] = useState("");
   const [copied, setCopied] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -78,6 +82,16 @@ export default function QuoteNewPage() {
       setLoading(false);
       return;
     }
+    const subOrderQty = (() => {
+      const v = parseFloat(orderQuantity);
+      return !isNaN(v) && v >= 1 ? Math.floor(v) : 1;
+    })();
+    const subPcsPerCtn = (() => {
+      const v = parseFloat(pcsPerCarton);
+      return !isNaN(v) && v >= 1 ? Math.floor(v) : 0;
+    })();
+    const subCartons = subPcsPerCtn > 0 && subOrderQty >= 1 ? Math.ceil(subOrderQty / subPcsPerCtn) : 1;
+
     let finalDomesticCny: number | undefined;
     if (tradeMode === "1039") {
       if (domesticChargeType === "fixed") {
@@ -94,7 +108,7 @@ export default function QuoteNewPage() {
         if (l > 0 && w > 0 && h > 0 && gw >= 0 && !isNaN(ypt) && ypt >= 0) {
           const volKg = calcVolumetricWeight(l, w, h, volumetricDivisor);
           const ch = getChargeableWeight(gw, volKg);
-          finalDomesticCny = calcDomesticCnyByWeight(ch, ypt);
+          finalDomesticCny = calcDomesticCnyByWeight(ch, ypt) * subCartons;
         }
       } else if (domesticChargeType === "by_volume") {
         const l = parseFloat(boxL);
@@ -103,7 +117,7 @@ export default function QuoteNewPage() {
         const ypc = parseFloat(domesticYuanPerCbm);
         if (l > 0 && w > 0 && h > 0 && !isNaN(ypc) && ypc >= 0) {
           const cbm = calcVolumeCbmWithAllowance(l, w, h, boxAllowanceCm);
-          finalDomesticCny = calcDomesticCnyByVolume(cbm, ypc);
+          finalDomesticCny = calcDomesticCnyByVolume(cbm, ypc) * subCartons;
         }
       } else if (domesticChargeType === "per_container") {
         const v = parseFloat(domesticYuanPerContainer);
@@ -123,6 +137,15 @@ export default function QuoteNewPage() {
       domesticCny: finalDomesticCny,
       companyName: companyName.trim() || undefined,
       companyLogoUrl: companyLogoUrl.trim() || undefined,
+      agentFee: (() => {
+        const v = parseFloat(agentFeeOverride);
+        return !isNaN(v) && v >= 0 ? v : undefined;
+      })(),
+      settlementFactor: (() => {
+        const v = parseFloat(settlementFactorOverride);
+        return !isNaN(v) && v > 0 && v <= 1 ? v : undefined;
+      })(),
+      orderQuantity: subOrderQty > 1 ? subOrderQty : undefined,
     });
     setLoading(false);
     if (res.error) {
@@ -147,6 +170,16 @@ export default function QuoteNewPage() {
   const w = parseFloat(boxW);
   const h = parseFloat(boxH);
   const gw = parseFloat(grossWeight);
+  const orderQtyNum = (() => {
+    const v = parseFloat(orderQuantity);
+    return !isNaN(v) && v >= 1 ? Math.floor(v) : 1;
+  })();
+  const pcsPerCtnNum = (() => {
+    const v = parseFloat(pcsPerCarton);
+    return !isNaN(v) && v >= 1 ? Math.floor(v) : 0;
+  })();
+  const cartons = pcsPerCtnNum > 0 && orderQtyNum >= 1 ? Math.ceil(orderQtyNum / pcsPerCtnNum) : 1;
+
   const volumeCbm =
     l > 0 && w > 0 && h > 0 ? calcVolumeCbmWithAllowance(l, w, h, boxAllowanceCm) : 0;
   const volumetricKg = l > 0 && w > 0 && h > 0 ? calcVolumetricWeight(l, w, h, volumetricDivisor) : 0;
@@ -166,11 +199,11 @@ export default function QuoteNewPage() {
     } else if (domesticChargeType === "by_weight") {
       const ypt = parseFloat(domesticYuanPerTon);
       if (chargeableKg > 0 && !isNaN(ypt) && ypt >= 0)
-        domesticCnyForPreview = calcDomesticCnyByWeight(chargeableKg, ypt);
+        domesticCnyForPreview = calcDomesticCnyByWeight(chargeableKg, ypt) * cartons;
     } else if (domesticChargeType === "by_volume") {
       const ypc = parseFloat(domesticYuanPerCbm);
       if (volumeCbm > 0 && !isNaN(ypc) && ypc >= 0)
-        domesticCnyForPreview = calcDomesticCnyByVolume(volumeCbm, ypc);
+        domesticCnyForPreview = calcDomesticCnyByVolume(volumeCbm, ypc) * cartons;
     } else if (domesticChargeType === "per_container") {
       const v = parseFloat(domesticYuanPerContainer);
       domesticCnyForPreview = !isNaN(v) && v >= 0 ? v : undefined;
@@ -179,19 +212,29 @@ export default function QuoteNewPage() {
 
   const effectiveDomesticCny =
     domesticChargeType !== "fixed" ? (domesticCnyForPreview ?? 0) : domesticCnyForPreview;
+  const totalExw = exwNum * orderQtyNum;
+  const agentFeeNum = (() => {
+    const v = parseFloat(agentFeeOverride);
+    return !isNaN(v) && v >= 0 ? v : 80;
+  })();
+  const settlementFactorNum = (() => {
+    const v = parseFloat(settlementFactorOverride);
+    return !isNaN(v) && v > 0 && v <= 1 ? v : 0.998;
+  })();
   const breakdown =
     tradeMode === "1039" &&
     !isNaN(exwNum) &&
     exwNum > 0
-      ? getCostBreakdown(exwNum, isNaN(marginNum) ? 15 : marginNum, isNaN(rateNum) ? 7.25 : rateNum, {
+      ? getCostBreakdown(totalExw, isNaN(marginNum) ? 15 : marginNum, isNaN(rateNum) ? 7.25 : rateNum, {
           shipFrom,
           domesticCny: effectiveDomesticCny,
+          agentFee: agentFeeNum,
+          settlementFactor: settlementFactorNum,
         })
       : null;
 
-  const fobPreview =
-    breakdown?.fobUsd ??
-    (tradeMode === "general" && !isNaN(exwNum) && exwNum > 0 ? exwNum / (isNaN(rateNum) ? 7.25 : rateNum) : null);
+  const fobTotalUsd = breakdown?.fobUsd ?? (tradeMode === "general" && !isNaN(exwNum) && exwNum > 0 ? (exwNum * orderQtyNum) / (isNaN(rateNum) ? 7.25 : rateNum) : null);
+  const fobPreview = fobTotalUsd != null && orderQtyNum > 1 ? Number((fobTotalUsd / orderQtyNum).toFixed(2)) : fobTotalUsd;
 
   const freightUsdNum = parseFloat(freightUsd);
   const insuranceUsdNum = parseFloat(insuranceUsd);
@@ -202,12 +245,14 @@ export default function QuoteNewPage() {
       ? calcCifUsd(fobPreview, freightUsdNum, !isNaN(insuranceUsdNum) && insuranceUsdNum >= 0 ? insuranceUsdNum : 0)
       : null;
 
+  const totalVolumeCbm = volumeCbm * cartons;
+  const totalGw = (gw >= 0 ? gw : 0) * cartons;
   const seaYuanPerTonNum = parseFloat(seaYuanPerTon);
   const seaChargeableTon =
-    volumeCbm > 0 && gw >= 0 ? getSeaChargeableTon(volumeCbm, gw) : 0;
+    totalVolumeCbm > 0 || totalGw >= 0 ? getSeaChargeableTon(totalVolumeCbm, totalGw) : 0;
   const seaFreightCny =
-    volumeCbm >= 0 && gw >= 0 && !isNaN(seaYuanPerTonNum) && seaYuanPerTonNum >= 0
-      ? calcSeaFreightCny(volumeCbm, gw, seaYuanPerTonNum)
+    (totalVolumeCbm >= 0 || totalGw >= 0) && !isNaN(seaYuanPerTonNum) && seaYuanPerTonNum >= 0
+      ? calcSeaFreightCny(totalVolumeCbm, totalGw, seaYuanPerTonNum)
       : 0;
   const seaFreightUsd =
     seaFreightCny > 0 && rateNum > 0 ? Number((seaFreightCny / rateNum).toFixed(2)) : 0;
@@ -245,14 +290,48 @@ export default function QuoteNewPage() {
       : null;
 
   return (
-    <main className="min-h-screen bg-slate-950 text-slate-100 p-4 md:p-6">
-      <div className="max-w-2xl mx-auto">
-        <header className="flex items-center gap-2 mb-6">
-          <Link href="/" className="text-slate-400 hover:text-white">
-            <Radar className="w-8 h-8 text-emerald-400" />
+    <main className="min-h-screen bg-slate-950 text-slate-100 px-3 py-4 sm:p-4 md:p-6 overflow-x-hidden" style={{ paddingBottom: "max(5.5rem, calc(5.5rem + env(safe-area-inset-bottom)))" }}>
+      <div className="max-w-2xl mx-auto min-w-0">
+        <header className="flex items-center gap-2 mb-4 sm:mb-6">
+          <Link href="/" className="p-1 -m-1 text-slate-400 hover:text-white min-h-[44px] min-w-[44px] flex items-center justify-center">
+            <Radar className="w-8 h-8 text-emerald-400" aria-hidden />
           </Link>
-          <h1 className="text-xl font-bold">生成报价链接</h1>
+          <h1 className="text-lg sm:text-xl font-bold truncate">生成报价链接</h1>
         </header>
+
+        {/* 成本计算公式（可编辑参数） */}
+        <section className="mb-4 sm:mb-6 rounded-xl border border-slate-700 bg-slate-900/50 p-3 sm:p-4">
+          <h2 className="text-sm font-medium text-emerald-400 mb-2">成本计算公式</h2>
+          <p className="text-slate-300 text-xs sm:text-sm font-mono mb-3 break-words">
+            FOB (USD) = (EXW + 代理费 + 国内段 + 利润) ÷ (汇率 × 结汇系数)
+          </p>
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 items-stretch sm:items-end">
+            <div className="min-w-0">
+              <label className="block text-xs text-slate-500 mb-0.5">代理费 (元)</label>
+              <input
+                type="number"
+                step="1"
+                min="0"
+                value={agentFeeOverride}
+                onChange={(e) => setAgentFeeOverride(e.target.value)}
+                className="w-full sm:w-20 rounded-lg bg-slate-800 border border-slate-600 text-white px-3 py-2.5 sm:px-2 sm:py-1.5 text-base sm:text-sm min-h-[44px] sm:min-h-0"
+              />
+            </div>
+            <div className="min-w-0">
+              <label className="block text-xs text-slate-500 mb-0.5">结汇系数</label>
+              <input
+                type="number"
+                step="0.001"
+                min="0.001"
+                max="1"
+                value={settlementFactorOverride}
+                onChange={(e) => setSettlementFactorOverride(e.target.value)}
+                className="w-full sm:w-20 rounded-lg bg-slate-800 border border-slate-600 text-white px-3 py-2.5 sm:px-2 sm:py-1.5 text-base sm:text-sm min-h-[44px] sm:min-h-0"
+              />
+              <p className="text-xs text-slate-500 mt-1">结汇时扣掉的手续/损耗，默认 0.998，一般不用改</p>
+            </div>
+          </div>
+        </section>
 
         {/* 智能粘贴区 */}
         <section className="mb-6 rounded-xl border border-slate-700 bg-slate-900/50 p-4">
@@ -285,11 +364,11 @@ export default function QuoteNewPage() {
               value={productName}
               onChange={(e) => setProductName(e.target.value)}
               required
-              className="w-full rounded-lg bg-slate-800 border border-slate-600 text-white p-3 focus:ring-2 focus:ring-emerald-500"
+              className="w-full rounded-lg bg-slate-800 border border-slate-600 text-white p-3 text-base sm:text-sm min-h-[44px] focus:ring-2 focus:ring-emerald-500"
               placeholder="如：筋膜枪 2000mAh"
             />
           </div>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm text-slate-400 mb-1">EXW 单价 (元) *</label>
               <p className="text-xs text-slate-500 mb-1.5">请填含税出厂价；若工厂给的是不含税价，请先按「含税价 = 不含税价 × (1 + 税率)」换算后再填。</p>
@@ -300,7 +379,7 @@ export default function QuoteNewPage() {
                 value={exwPrice}
                 onChange={(e) => setExwPrice(e.target.value)}
                 required
-                className="w-full rounded-lg bg-slate-800 border border-slate-600 text-white p-3 focus:ring-2 focus:ring-emerald-500"
+                className="w-full rounded-lg bg-slate-800 border border-slate-600 text-white p-3 text-base sm:text-sm min-h-[44px] focus:ring-2 focus:ring-emerald-500"
                 placeholder="出厂价"
               />
             </div>
@@ -312,7 +391,7 @@ export default function QuoteNewPage() {
                 min="0"
                 value={profitMargin}
                 onChange={(e) => setProfitMargin(e.target.value)}
-                className="w-full rounded-lg bg-slate-800 border border-slate-600 text-white p-3 focus:ring-2 focus:ring-emerald-500"
+                className="w-full rounded-lg bg-slate-800 border border-slate-600 text-white p-3 text-base sm:text-sm min-h-[44px] focus:ring-2 focus:ring-emerald-500"
               />
             </div>
           </div>
@@ -354,7 +433,36 @@ export default function QuoteNewPage() {
           {tradeMode === "1039" && (
             <div className="rounded-xl border border-slate-700 bg-slate-900/30 p-4 space-y-3">
               <h3 className="text-sm font-medium text-slate-300">箱规与重量（可选，用于按重/按方计国内段）</h3>
-              <div className="grid grid-cols-3 gap-3">
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs text-slate-500 mb-0.5">产品数量（件）</label>
+                  <input
+                    type="number"
+                    step="1"
+                    min="1"
+                    value={orderQuantity}
+                    onChange={(e) => setOrderQuantity(e.target.value)}
+                    placeholder="不填按单价"
+                    className="w-full rounded-lg bg-slate-800 border border-slate-600 text-white px-2 py-1.5 text-sm"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs text-slate-500 mb-0.5">每箱件数（件/箱）</label>
+                  <input
+                    type="number"
+                    step="1"
+                    min="1"
+                    value={pcsPerCarton}
+                    onChange={(e) => setPcsPerCarton(e.target.value)}
+                    placeholder="不填按单箱"
+                    className="w-full rounded-lg bg-slate-800 border border-slate-600 text-white px-2 py-1.5 text-sm"
+                  />
+                </div>
+              </div>
+              {orderQtyNum > 1 && cartons > 0 && (
+                <p className="text-xs text-slate-400">共 {orderQtyNum} 件 → {cartons} 箱（用于国内段/散货海运）</p>
+              )}
+              <div className="grid grid-cols-3 gap-2 sm:gap-3">
                 <div>
                   <label className="block text-xs text-slate-500 mb-0.5">长 cm</label>
                   <input
@@ -431,8 +539,8 @@ export default function QuoteNewPage() {
           {tradeMode === "1039" && (
             <div className="space-y-2">
               <label className="block text-sm text-slate-400">国内段计费</label>
-              <div className="flex flex-wrap gap-3">
-                <label className="flex items-center gap-2 text-slate-200 cursor-pointer">
+              <div className="flex flex-wrap gap-3 sm:gap-4">
+                <label className="flex items-center gap-2 text-slate-200 cursor-pointer min-h-[44px] py-1 sm:py-0">
                   <input
                     type="radio"
                     name="domesticChargeType"
@@ -442,7 +550,7 @@ export default function QuoteNewPage() {
                   />
                   固定（发货地）
                 </label>
-                <label className="flex items-center gap-2 text-slate-200 cursor-pointer">
+                <label className="flex items-center gap-2 text-slate-200 cursor-pointer min-h-[44px] py-1 sm:py-0">
                   <input
                     type="radio"
                     name="domesticChargeType"
@@ -452,7 +560,7 @@ export default function QuoteNewPage() {
                   />
                   按重
                 </label>
-                <label className="flex items-center gap-2 text-slate-200 cursor-pointer">
+                <label className="flex items-center gap-2 text-slate-200 cursor-pointer min-h-[44px] py-1 sm:py-0">
                   <input
                     type="radio"
                     name="domesticChargeType"
@@ -462,7 +570,7 @@ export default function QuoteNewPage() {
                   />
                   按体积
                 </label>
-                <label className="flex items-center gap-2 text-slate-200 cursor-pointer">
+                <label className="flex items-center gap-2 text-slate-200 cursor-pointer min-h-[44px] py-1 sm:py-0">
                   <input
                     type="radio"
                     name="domesticChargeType"
@@ -477,7 +585,7 @@ export default function QuoteNewPage() {
                 <>
                   <label className="block text-sm text-slate-400 mt-2">发货地</label>
                   <div className="flex flex-wrap gap-4 items-center">
-                    <label className="flex items-center gap-2 text-slate-200 cursor-pointer">
+                    <label className="flex items-center gap-2 text-slate-200 cursor-pointer min-h-[44px] py-1 sm:py-0">
                       <input
                         type="radio"
                         name="shipFrom"
@@ -487,7 +595,7 @@ export default function QuoteNewPage() {
                       />
                       外贸公司（义乌）发出（含义乌→港口拖车 120 元）
                     </label>
-                    <label className="flex items-center gap-2 text-slate-200 cursor-pointer">
+                    <label className="flex items-center gap-2 text-slate-200 cursor-pointer min-h-[44px] py-1 sm:py-0">
                       <input
                         type="radio"
                         name="shipFrom"
@@ -603,7 +711,7 @@ export default function QuoteNewPage() {
                 className="w-20 rounded-lg bg-slate-800 border border-slate-600 text-white px-3 py-2"
               />
             </div>
-            <label className="flex items-center gap-2 text-sm text-slate-400 cursor-pointer">
+            <label className="flex items-center gap-2 text-sm text-slate-400 cursor-pointer min-h-[44px] py-1 sm:py-0">
               <input
                 type="checkbox"
                 checked={lockRate}
@@ -612,7 +720,7 @@ export default function QuoteNewPage() {
               />
               锁定汇率（报价页展示锚定汇率）
             </label>
-            <label className="flex items-center gap-2 text-sm text-slate-400 cursor-pointer">
+            <label className="flex items-center gap-2 text-sm text-slate-400 cursor-pointer min-h-[44px] py-1 sm:py-0">
               <input
                 type="checkbox"
                 checked={accessControlled}
@@ -622,30 +730,12 @@ export default function QuoteNewPage() {
               受控访问（客户申请后才显示价格）
             </label>
           </div>
-          {breakdown != null && (
-            <div className="rounded-xl border border-slate-700 bg-slate-900/30 p-4 space-y-1 text-sm">
-              <h3 className="text-slate-300 font-medium mb-2">成本明细</h3>
-              <p className="text-slate-400">
-                EXW {breakdown.exw} 元 + 代理费 {breakdown.agentFee} 元 + 国内段 {breakdown.domesticCny} 元 + 利润{" "}
-                {breakdown.profit.toFixed(0)} 元 = 总成本 {breakdown.totalCny.toFixed(0)} 元
-              </p>
-              <p className="text-slate-400">
-                汇率 {breakdown.exchangeRate} × 结汇系数 {breakdown.settlementFactor} → FOB{" "}
-                <span className="text-emerald-400 font-medium">${breakdown.fobUsd} USD</span>
-              </p>
-            </div>
-          )}
-          {fobPreview != null && !breakdown && (
-            <p className="text-sm text-slate-400">
-              预估 FOB 价：<span className="text-emerald-400 font-medium">${fobPreview} USD</span>
-            </p>
-          )}
 
           <div className="rounded-xl border border-slate-700 bg-slate-900/30 p-3">
             <button
               type="button"
               onClick={() => setShowCfrCif(!showCfrCif)}
-              className="flex items-center gap-2 w-full text-left text-sm text-slate-400 hover:text-slate-200"
+              className="flex items-center gap-2 w-full text-left text-sm text-slate-400 hover:text-slate-200 min-h-[44px]"
             >
               {showCfrCif ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
               到岸价（可选）CFR / CIF
@@ -654,7 +744,7 @@ export default function QuoteNewPage() {
               <div className="mt-3 space-y-3 pt-3 border-t border-slate-700">
                 <p className="text-xs text-slate-500 font-medium">海运方式</p>
                 <div className="flex flex-wrap gap-3">
-                  <label className="flex items-center gap-1.5 cursor-pointer">
+                  <label className="flex items-center gap-1.5 cursor-pointer min-h-[44px] py-1 sm:py-0">
                     <input
                       type="radio"
                       name="freightType"
@@ -664,7 +754,7 @@ export default function QuoteNewPage() {
                     />
                     <span className="text-sm text-slate-300">散货（LCL）</span>
                   </label>
-                  <label className="flex items-center gap-1.5 cursor-pointer">
+                  <label className="flex items-center gap-1.5 cursor-pointer min-h-[44px] py-1 sm:py-0">
                     <input
                       type="radio"
                       name="freightType"
@@ -674,7 +764,7 @@ export default function QuoteNewPage() {
                     />
                     <span className="text-sm text-slate-300">整柜（FCL）</span>
                   </label>
-                  <label className="flex items-center gap-1.5 cursor-pointer">
+                  <label className="flex items-center gap-1.5 cursor-pointer min-h-[44px] py-1 sm:py-0">
                     <input
                       type="radio"
                       name="freightType"
@@ -828,11 +918,48 @@ export default function QuoteNewPage() {
             )}
           </div>
 
+          {/* 核查：成本明细 + 报价明细（提交前核对） */}
+          <section className="rounded-xl border border-slate-600 bg-slate-900/40 p-3 sm:p-4 space-y-4 min-w-0">
+            <h2 className="text-sm font-medium text-slate-300">提交前核查</h2>
+
+            <div>
+              <h3 className="text-xs font-medium text-slate-500 uppercase tracking-wide mb-2">成本明细</h3>
+              {breakdown != null ? (
+                <div className="text-sm text-slate-400 space-y-1">
+                  {orderQtyNum > 1 && (
+                    <p>数量 {orderQtyNum} 件{pcsPerCtnNum > 0 ? `，${cartons} 箱` : ""}；总 EXW {breakdown.exw} 元</p>
+                  )}
+                  <p>EXW {breakdown.exw} 元 + 代理费 {breakdown.agentFee} 元 + 国内段 {breakdown.domesticCny} 元 + 利润 {breakdown.profit.toFixed(0)} 元 = 总成本 {breakdown.totalCny.toFixed(0)} 元</p>
+                  <p>汇率 {breakdown.exchangeRate} × 结汇系数 {breakdown.settlementFactor} → FOB {orderQtyNum > 1 ? `总价 $${breakdown.fobUsd} USD，单价 ` : ""}<span className="text-emerald-400 font-medium">${fobPreview} USD</span></p>
+                </div>
+              ) : tradeMode === "general" && !isNaN(exwNum) && exwNum > 0 ? (
+                <p className="text-sm text-slate-400">一般贸易：FOB = EXW ÷ 汇率 = <span className="text-emerald-400 font-medium">${(exwNum / (isNaN(rateNum) ? 7.25 : rateNum)).toFixed(2)} USD</span>{orderQtyNum > 1 ? `（单价）；总 ${(exwNum * orderQtyNum / (isNaN(rateNum) ? 7.25 : rateNum)).toFixed(2)} USD` : ""}</p>
+              ) : (
+                <p className="text-sm text-slate-500">请填写产品名与有效出厂价后自动显示</p>
+              )}
+            </div>
+
+            <div>
+              <h3 className="text-xs font-medium text-slate-500 uppercase tracking-wide mb-2">报价明细</h3>
+              <ul className="text-sm text-slate-400 space-y-1">
+                <li>产品：{productName.trim() || "—"}</li>
+                <li>客户：{customerName.trim() || "—"}</li>
+                {orderQtyNum > 1 && <li>数量：{orderQtyNum} 件{pcsPerCtnNum > 0 ? `，${cartons} 箱` : ""}</li>}
+                <li>贸易方式：{tradeMode === "1039" ? "1039" : "一般贸易"}</li>
+                <li>FOB：{fobPreview != null ? <span className="text-emerald-400 font-medium">${fobPreview} USD</span> : "—"}{orderQtyNum > 1 && fobTotalUsd != null ? `（单价）；总 $${fobTotalUsd.toFixed(2)} USD` : ""}</li>
+                {effectiveCfr != null && <li>CFR：<span className="text-emerald-400">${effectiveCfr} USD</span></li>}
+                {effectiveCif != null && <li>CIF：<span className="text-emerald-400">${effectiveCif} USD</span></li>}
+                <li>锁定汇率：{lockRate ? "是" : "否"}{lockRate && rateNum && ` (${rateNum})`}</li>
+                <li>受控访问：{accessControlled ? "是" : "否"}</li>
+              </ul>
+            </div>
+          </section>
+
           {error && <p className="text-red-400 text-sm">{error}</p>}
           <button
             type="submit"
             disabled={loading}
-            className="w-full rounded-lg bg-emerald-600 py-3 font-medium text-white hover:bg-emerald-500 disabled:opacity-50"
+            className="w-full rounded-xl bg-emerald-600 py-4 min-h-[48px] font-medium text-base text-white hover:bg-emerald-500 active:bg-emerald-700 disabled:opacity-50"
           >
             {loading ? "生成中…" : "生成报价链接"}
           </button>

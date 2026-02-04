@@ -109,31 +109,31 @@ export default async function DashboardPage() {
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3001";
 
   return (
-    <main className="min-h-screen bg-slate-950 text-slate-100 p-4 md:p-6">
-      <div className="max-w-3xl mx-auto">
-        <header className="flex items-center justify-between mb-6">
-          <Link href="/" className="flex items-center gap-2 text-slate-400 hover:text-white">
-            <span className="relative inline-flex">
+    <main className="min-h-screen bg-slate-950 text-slate-100 px-3 py-4 sm:p-4 md:p-6 overflow-x-hidden" style={{ paddingBottom: "max(5.5rem, calc(5.5rem + env(safe-area-inset-bottom)))" }}>
+      <div className="max-w-3xl mx-auto min-w-0">
+        <header className="flex flex-wrap items-center justify-between gap-3 mb-4 sm:mb-6">
+          <Link href="/" className="flex items-center gap-2 text-slate-400 hover:text-white min-h-[44px]">
+            <span className="relative inline-flex shrink-0">
               <Radar className="w-8 h-8 text-emerald-400 animate-pulse" />
               <span className="absolute -top-0.5 -right-0.5 flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
               </span>
             </span>
-            <span className="text-xl font-bold">1039报价雷达</span>
+            <span className="text-lg sm:text-xl font-bold truncate">1039报价雷达</span>
           </Link>
           <div className="flex items-center gap-2">
             <Link
               href="/admin"
-              className="text-sm text-slate-500 hover:text-slate-300"
+              className="text-sm text-slate-500 hover:text-slate-300 py-2 px-2 min-h-[44px] flex items-center"
             >
               数据看板
             </Link>
             <Link
               href="/quote/new"
-              className="inline-flex items-center gap-2 rounded-lg bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-500"
+              className="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-600 px-4 py-3 min-h-[48px] text-sm font-medium text-white hover:bg-emerald-500 active:bg-emerald-700"
             >
-              <FileText className="w-4 h-4" />
+              <FileText className="w-4 h-4 shrink-0" />
               新建报价
             </Link>
           </div>
@@ -180,7 +180,7 @@ export default async function DashboardPage() {
               return (
                 <li
                   key={q.id}
-                  className={`rounded-xl border p-4 flex flex-wrap items-center justify-between gap-3 ${
+                  className={`rounded-xl border p-3 sm:p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 ${
                     isMultiIp ? "border-red-500/50 bg-red-950/20" : "border-slate-700 bg-slate-900/50"
                   }`}
                 >
@@ -229,14 +229,14 @@ export default async function DashboardPage() {
                       href={`${baseUrl}/view/${q.short_id}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1 rounded-lg border border-slate-600 px-3 py-1.5 text-sm text-slate-300 hover:bg-slate-800"
+                      className="inline-flex items-center gap-1 rounded-lg border border-slate-600 px-3 py-2 min-h-[44px] text-sm text-slate-300 hover:bg-slate-800"
                     >
                       <ExternalLink className="w-4 h-4" />
                       链接
                     </a>
                     <Link
                       href={`/share/${q.short_id}`}
-                      className="inline-flex items-center gap-1 rounded-lg border border-slate-600 px-3 py-1.5 text-sm text-slate-300 hover:bg-slate-800"
+                      className="inline-flex items-center gap-1 rounded-lg border border-slate-600 px-3 py-2 min-h-[44px] text-sm text-slate-300 hover:bg-slate-800"
                     >
                       <Image className="w-4 h-4" />
                       长图

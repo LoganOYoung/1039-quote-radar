@@ -76,9 +76,9 @@ export default async function ViewQuotePage({ params }: Props) {
     : null;
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-slate-100 via-white to-slate-50 text-gray-900">
+    <main className="min-h-screen bg-gradient-to-b from-slate-100 via-white to-slate-50 text-gray-900 overflow-x-hidden">
       <TrackDuration quoteId={quote.id} />
-      <div className="max-w-lg mx-auto px-4 sm:px-6 py-8 sm:py-12">
+      <div className="max-w-lg mx-auto px-3 sm:px-6 py-6 sm:py-12 min-w-0">
         {/* Header: gradient band + logo & company */}
         <header className="rounded-t-2xl overflow-hidden bg-gradient-to-r from-teal-600 via-emerald-600 to-cyan-600 shadow-lg">
           <div className="px-6 py-6 sm:py-8 flex flex-col items-center text-center">

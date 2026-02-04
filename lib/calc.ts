@@ -125,25 +125,33 @@ export type CostBreakdown = {
 
 /**
  * 成本明细（1039 模式），用于展示与校验。
+ * 可选覆盖：agentFee、settlementFactor（不传则用环境变量或默认值）。
  */
 export function getCostBreakdown(
   exwPrice: number,
   profitMarginPercent: number,
   exchangeRate: number = 7.25,
-  options?: { shipFrom?: ShipFrom; domesticCny?: number }
+  options?: {
+    shipFrom?: ShipFrom;
+    domesticCny?: number;
+    agentFee?: number;
+    settlementFactor?: number;
+  }
 ): CostBreakdown {
   const profit = exwPrice * (profitMarginPercent / 100);
   const domesticCny = options?.domesticCny ?? getDomesticCny(options?.shipFrom ?? "yiwu");
-  const totalCny = exwPrice + AGENT_FEE + domesticCny + profit;
-  const fobUsd = Number((totalCny / (exchangeRate * SETTLEMENT_FACTOR)).toFixed(2));
+  const agentFee = options?.agentFee ?? AGENT_FEE;
+  const settlementFactor = options?.settlementFactor ?? SETTLEMENT_FACTOR;
+  const totalCny = exwPrice + agentFee + domesticCny + profit;
+  const fobUsd = Number((totalCny / (exchangeRate * settlementFactor)).toFixed(2));
   return {
     exw: exwPrice,
-    agentFee: AGENT_FEE,
+    agentFee,
     domesticCny,
     profit,
     totalCny,
     exchangeRate,
-    settlementFactor: SETTLEMENT_FACTOR,
+    settlementFactor,
     fobUsd,
   };
 }
@@ -152,7 +160,12 @@ export function calcFobUsd(
   exwPrice: number,
   profitMarginPercent: number,
   exchangeRate: number = 7.25,
-  options?: { shipFrom?: ShipFrom; domesticCny?: number }
+  options?: {
+    shipFrom?: ShipFrom;
+    domesticCny?: number;
+    agentFee?: number;
+    settlementFactor?: number;
+  }
 ): number {
   return getCostBreakdown(exwPrice, profitMarginPercent, exchangeRate, options).fobUsd;
 }

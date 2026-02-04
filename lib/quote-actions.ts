@@ -27,18 +27,38 @@ export type CreateQuoteInput = {
   companyName?: string;
   /** 公司 Logo 图片链接（发给客户的报价页头部展示） */
   companyLogoUrl?: string;
+  /** 代理费（元），不传则用环境变量或默认 80 */
+  agentFee?: number;
+  /** 结汇系数，不传则用环境变量或默认 0.998 */
+  settlementFactor?: number;
+  /** 产品数量（件），不传则按单价报价；传则按整单算总成本后存单价 FOB */
+  orderQuantity?: number;
 };
 
 export async function createQuote(input: CreateQuoteInput): Promise<{ shortId: string; error?: string }> {
   const shortId = nanoid(10);
   const rate = input.exchangeRate ?? DEFAULT_RATE;
-  const fobUsd =
-    input.tradeMode === "general"
-      ? input.exwPrice / rate
-      : calcFobUsd(input.exwPrice, input.profitMargin, rate, {
-          shipFrom: input.shipFrom,
-          domesticCny: input.domesticCny,
-        });
+  const qty = input.orderQuantity != null && input.orderQuantity >= 1 ? input.orderQuantity : 1;
+  let fobUsd: number;
+  if (input.tradeMode === "general") {
+    fobUsd = Number((input.exwPrice / rate).toFixed(2));
+  } else if (qty > 1) {
+    const totalExw = input.exwPrice * qty;
+    const profit = totalExw * (input.profitMargin / 100);
+    const domesticCny = input.domesticCny ?? (input.shipFrom === "factory" ? 0 : 120);
+    const agentFee = input.agentFee ?? 80;
+    const settlementFactor = input.settlementFactor ?? 0.998;
+    const totalCny = totalExw + agentFee + domesticCny + profit;
+    const totalFobUsd = totalCny / (rate * settlementFactor);
+    fobUsd = Number((totalFobUsd / qty).toFixed(2));
+  } else {
+    fobUsd = calcFobUsd(input.exwPrice, input.profitMargin, rate, {
+      shipFrom: input.shipFrom,
+      domesticCny: input.domesticCny,
+      agentFee: input.agentFee,
+      settlementFactor: input.settlementFactor,
+    });
+  }
 
   const row: Record<string, unknown> = {
     short_id: shortId,
