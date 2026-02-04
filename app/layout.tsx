@@ -1,10 +1,16 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import WechatVisitLogger from "@/components/WechatVisitLogger";
 
 export const metadata: Metadata = {
   title: "1039报价雷达",
   description: "让你的报价单会说话 — 客户点开链接，实时查看动态",
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
 };
 
 export default function RootLayout({

@@ -19,6 +19,16 @@ body {
   background: var(--background);
 }
 
+/* 国内手机微信：安全区，避免刘海/底部横条遮挡 */
+@supports (padding: env(safe-area-inset-top)) {
+  body {
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+}
+
 @layer utilities {
   .text-balance {
     text-wrap: balance;
