@@ -4,7 +4,7 @@ import { nanoid } from "nanoid";
 import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
 import { supabase } from "@/lib/supabase";
-import { calcFobUsd } from "@/lib/calc";
+import { calcFobUsd, type ShipFrom } from "@/lib/calc";
 
 const DEFAULT_RATE = parseFloat(process.env.DEFAULT_EXCHANGE_RATE || "7.25");
 
@@ -19,6 +19,10 @@ export type CreateQuoteInput = {
   exchangeRateLocked?: number;
   /** 受控访问：买家需申请解锁后才可见价格 */
   accessControlled?: boolean;
+  /** 发货地：义乌发出 vs 工厂/供应商直发港口（影响国内段运费） */
+  shipFrom?: ShipFrom;
+  /** 国内段运费（元），不传则按 shipFrom 用默认值：义乌 120，工厂直发 0 */
+  domesticCny?: number;
 };
 
 export async function createQuote(input: CreateQuoteInput): Promise<{ shortId: string; error?: string }> {
@@ -27,7 +31,10 @@ export async function createQuote(input: CreateQuoteInput): Promise<{ shortId: s
   const fobUsd =
     input.tradeMode === "general"
       ? input.exwPrice / rate
-      : calcFobUsd(input.exwPrice, input.profitMargin, rate);
+      : calcFobUsd(input.exwPrice, input.profitMargin, rate, {
+          shipFrom: input.shipFrom,
+          domesticCny: input.domesticCny,
+        });
 
   const row: Record<string, unknown> = {
     short_id: shortId,
