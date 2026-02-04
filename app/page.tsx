@@ -9,6 +9,7 @@ import {
   BarChart3,
   type LucideIcon,
 } from "lucide-react";
+import HomeMobileCarousel from "@/components/HomeMobileCarousel";
 
 const valueItems: { icon: LucideIcon; title: string; desc: string }[] = [
   {
@@ -41,17 +42,27 @@ const valueItems: { icon: LucideIcon; title: string; desc: string }[] = [
 export default function HomePage() {
   return (
     <>
+      {/* 手机端：左滑三屏 + 小圆点 + 仅最后一屏显示底部按钮 */}
       <main
-        className="w-full bg-white flex flex-col items-center px-4 sm:px-6 pt-12 sm:pt-16 pb-24 text-slate-800"
+        className="sm:hidden w-full h-dvh bg-white text-slate-800 flex flex-col overflow-hidden"
         style={{
-          paddingBottom: "max(11rem, calc(11rem + env(safe-area-inset-bottom)))",
+          paddingBottom: "max(10rem, calc(10rem + env(safe-area-inset-bottom)))",
+        }}
+      >
+        <HomeMobileCarousel />
+      </main>
+
+      {/* 桌面端：保持单页滚动，不做左滑 */}
+      <main
+        className="hidden sm:flex w-full bg-white flex-col items-center px-4 sm:px-6 pt-12 sm:pt-16 pb-24 text-slate-800"
+        style={{
+          paddingBottom: "max(5.5rem, calc(5.5rem + env(safe-area-inset-bottom)))",
           minHeight: "100dvh",
         }}
       >
         <div className="w-full max-w-xl flex flex-col items-center flex-1">
-          {/* 第一屏：品牌 + 一句话价值 */}
           <section
-            className="w-full flex flex-col items-center text-center mb-10 sm:mb-12 min-h-[50dvh] sm:min-h-0 justify-center sm:justify-start"
+            className="w-full flex flex-col items-center text-center mb-10 sm:mb-12"
             aria-label="产品介绍"
           >
             <div className="flex items-center justify-center gap-2.5 mb-3">
@@ -70,7 +81,6 @@ export default function HomePage() {
             </p>
           </section>
 
-          {/* 第二屏：工具、功能与价值（正向表述，不引起顾虑） */}
           <section className="w-full sm:mb-10" aria-label="工具与价值">
             <ul className="w-full space-y-4 text-left">
               {valueItems.map(({ icon: Icon, title, desc }) => (
@@ -90,8 +100,7 @@ export default function HomePage() {
             </ul>
           </section>
 
-          {/* 桌面端：按钮在流式布局内 */}
-          <div className="w-full flex justify-center mt-8 sm:mt-10 pb-4 hidden sm:flex">
+          <div className="w-full flex justify-center mt-8 sm:mt-10 pb-4">
             <Link
               href="/quote/new"
               className="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-600 px-8 py-4 min-h-[48px] text-white text-base font-medium shadow-sm hover:bg-emerald-500 active:bg-emerald-700 transition-colors w-full sm:w-auto"
@@ -100,33 +109,11 @@ export default function HomePage() {
               生成报价链接
             </Link>
           </div>
-          <p className="text-slate-400 text-xs mt-4 pb-6 hidden sm:block">
+          <p className="text-slate-400 text-xs mt-4 pb-6">
             支持「添加到主屏幕」，像 App 一样使用
           </p>
         </div>
       </main>
-
-      {/* 手机端：生成报价按钮固定在底部导航上方，不遮挡导航 */}
-      <div
-        className="fixed left-0 right-0 z-40 border-t border-slate-200 bg-white/95 backdrop-blur sm:hidden"
-        style={{
-          bottom: "max(3.5rem, calc(3.5rem + env(safe-area-inset-bottom)))",
-          paddingLeft: "env(safe-area-inset-left)",
-          paddingRight: "env(safe-area-inset-right)",
-          paddingTop: "8px",
-          paddingBottom: "8px",
-        }}
-      >
-        <div className="px-4 py-3 flex justify-center">
-          <Link
-            href="/quote/new"
-            className="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-600 px-8 py-4 min-h-[48px] text-white text-base font-medium shadow-sm hover:bg-emerald-500 active:bg-emerald-700 transition-colors w-full max-w-sm"
-          >
-            <FileText className="h-5 w-5 shrink-0" aria-hidden />
-            生成报价链接
-          </Link>
-        </div>
-      </div>
     </>
   );
 }
