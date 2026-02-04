@@ -340,31 +340,36 @@ export default function QuoteNewPage() {
         <div className={isMobile && mobileStep !== 1 ? "hidden" : ""}>
         {/* 1. 贸易模式（最先选，决定后续展示哪些项） */}
         <section className="mb-4 sm:mb-6 rounded-2xl border border-slate-100 bg-slate-50 p-3 sm:p-4">
-          <h2 className="text-sm font-medium text-slate-700 mb-3">贸易模式</h2>
-          <div className="flex gap-3">
+          <h2 className="text-sm font-medium text-slate-700 mb-2">贸易模式</h2>
+          <p className="text-xs text-slate-500 mb-3">根据您的出口方式选择，决定报价公式与需填项。</p>
+          <div className="flex flex-col sm:flex-row gap-3">
             <button
               type="button"
               onClick={() => setTradeMode("1039")}
-              className={`flex-1 rounded-xl border-2 px-4 py-3 text-left transition-colors min-h-[48px] ${
+              className={`flex-1 rounded-xl border-2 px-4 py-3 text-left transition-colors min-h-0 ${
                 tradeMode === "1039"
                   ? "border-emerald-500 bg-emerald-500/10 text-emerald-600"
                   : "border-slate-200 bg-slate-50 text-slate-600 hover:border-slate-300 hover:text-slate-700"
               }`}
             >
-              <span className="font-medium block">义乌 1039</span>
-              <span className="text-xs opacity-90 mt-0.5 block text-slate-500">市场采购，代理出口，含代理费/国内段/结汇系数</span>
+              <span className="font-medium block text-slate-900">义乌 1039</span>
+              <span className="text-xs text-slate-500 mt-1 block leading-relaxed">
+                市场采购贸易（海关监管代码 1039），适合义乌市场商户、小批量多品种出口，通过代理报关结汇。报价含代理费、国内段运费、结汇系数等。
+              </span>
             </button>
             <button
               type="button"
               onClick={() => setTradeMode("general")}
-              className={`flex-1 rounded-xl border-2 px-4 py-3 text-left transition-colors min-h-[48px] ${
+              className={`flex-1 rounded-xl border-2 px-4 py-3 text-left transition-colors min-h-0 ${
                 tradeMode === "general"
                   ? "border-emerald-500 bg-emerald-500/10 text-emerald-600"
                   : "border-slate-200 bg-slate-50 text-slate-600 hover:border-slate-300 hover:text-slate-700"
               }`}
             >
-              <span className="font-medium block">一般贸易</span>
-              <span className="text-xs opacity-90 mt-0.5 block text-slate-500">FOB = EXW ÷ 汇率，无需代理费/国内段</span>
+              <span className="font-medium block text-slate-900">一般贸易</span>
+              <span className="text-xs text-slate-500 mt-1 block leading-relaxed">
+                传统进出口贸易（如监管代码 0110），适合有自营出口资质的企业。FOB = EXW ÷ 汇率，无需代理费与国内段，报价更简单。
+              </span>
             </button>
           </div>
         </section>
