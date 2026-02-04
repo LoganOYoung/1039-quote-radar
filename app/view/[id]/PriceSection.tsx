@@ -91,13 +91,13 @@ export default function PriceSection({
             type="button"
             onClick={handleRequestAccess}
             disabled={loading}
-            className="mt-4 w-full rounded-lg bg-blue-600 text-white px-4 py-3 font-medium hover:bg-blue-500 disabled:opacity-50"
+            className="mt-4 w-full rounded-lg bg-blue-600 text-white px-4 py-3 font-medium hover:bg-blue-500 active:bg-blue-700 disabled:opacity-50 min-h-[44px]"
           >
-            {loading ? "提交中…" : "Unlock Full Quote"}
+            {loading ? "Submitting…" : "Request to View Price"}
           </button>
         ) : (
           <p className="mt-4 text-sm text-gray-500">
-            已提交申请，供应商授权后价格将自动显示（请稍候或刷新页面）。
+            Request sent. Price will show once the supplier approves. You may refresh this page.
           </p>
         )}
       </div>

@@ -288,6 +288,7 @@ export default function QuoteNewPage() {
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block text-sm text-slate-400 mb-1">EXW 单价 (元) *</label>
+              <p className="text-xs text-slate-500 mb-1.5">请填含税出厂价；若工厂给的是不含税价，请先按「含税价 = 不含税价 × (1 + 税率)」换算后再填。</p>
               <input
                 type="number"
                 step="0.01"

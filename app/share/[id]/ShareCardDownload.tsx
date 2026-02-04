@@ -61,7 +61,7 @@ export default function ShareCardDownload({ productName, fobPriceUsd, customerNa
             </div>
           )}
         </dl>
-        <p className="mt-4 text-xs text-gray-400">Powered by 1039报价雷达</p>
+        <p className="mt-4 text-xs text-gray-400">Powered by 1039 Quote Radar</p>
       </div>
       <button
         type="button"
