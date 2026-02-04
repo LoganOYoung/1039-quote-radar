@@ -44,7 +44,7 @@ export async function notifyQuoteViewed(quote: QuoteInfo, city: string): Promise
 export async function notifyAccessRequested(quote: QuoteInfo, city: string): Promise<void> {
   const feishu = process.env.FEISHU_WEBHOOK_URL;
   const wecom = process.env.WECOM_WEBHOOK_URL;
-  const text = `来自 ${city} 的买家请求解锁报价「${quote.product_name}」。请到仪表盘授权后，客户刷新即可看到价格。`;
+  const text = `来自 ${city} 的买家请求解锁报价「${quote.product_name}」。请到我的报价授权后，客户刷新即可看到价格。`;
 
   if (feishu) {
     try {

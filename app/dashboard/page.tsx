@@ -34,6 +34,7 @@ export default async function DashboardPage() {
 
   const quoteIds = (quotes || []).map((q) => q.id);
   const ipCountByQuote: Record<string, number> = {};
+  const latestDurationByQuote: Record<string, number | null> = {};
   let pendingAccessByQuote: Record<string, Array<{ id: string; session_token: string; location_city: string | null; created_at: string }>> = {};
   let recentLogs: Array<{
     product_name: string;
@@ -72,6 +73,15 @@ export default async function DashboardPage() {
       }
       for (const id of quoteIds) {
         ipCountByQuote[id] = distinctIpsByQuote[id]?.size ?? 0;
+      }
+      // 每条报价最近一次访问的停留时长（用于列表展示「阅读时长」）
+      const sortedByViewed = [...logs].sort(
+        (a, b) => new Date(b.viewed_at).getTime() - new Date(a.viewed_at).getTime()
+      );
+      for (const log of sortedByViewed) {
+        if (latestDurationByQuote[log.quote_id] == null && log.duration_seconds != null && log.duration_seconds > 0) {
+          latestDurationByQuote[log.quote_id] = log.duration_seconds;
+        }
       }
     }
 
@@ -193,6 +203,23 @@ export default async function DashboardPage() {
                     <p className="text-sm text-slate-500 truncate">
                       {q.customer_name || "—"} · {new Date(q.created_at).toLocaleString("zh-CN")}
                     </p>
+                    {/* 客户行为：已读/次数、独立人数、最近阅读时长 */}
+                    <div className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-0.5 text-xs text-slate-500">
+                      <span className={((q.views_count ?? 0) > 0 ? "text-emerald-600" : "") + " font-medium"}>
+                        {(q.views_count ?? 0) > 0 ? "已读" : "未读"} ({q.views_count ?? 0} 次)
+                      </span>
+                      {distinctIps > 0 && (
+                        <span>
+                          {distinctIps} 人查看
+                          {isMultiIp && (
+                            <span className="text-red-600 ml-0.5">（可能转发）</span>
+                          )}
+                        </span>
+                      )}
+                      {latestDurationByQuote[q.id] != null && latestDurationByQuote[q.id]! > 0 && (
+                        <span>最近停留 {latestDurationByQuote[q.id]} 秒</span>
+                      )}
+                    </div>
                     {(pendingAccessByQuote[q.id]?.length ?? 0) > 0 && (
                       <div className="mt-2 space-y-1">
                         <p className="text-xs text-amber-600">待授权 ({pendingAccessByQuote[q.id].length})</p>

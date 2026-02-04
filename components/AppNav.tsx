@@ -7,7 +7,7 @@ import { Home, LayoutDashboard, FileText } from "lucide-react";
 
 const navItems = [
   { href: "/", label: "首页", icon: Home },
-  { href: "/dashboard", label: "仪表盘", icon: LayoutDashboard },
+  { href: "/dashboard", label: "我的报价", icon: LayoutDashboard },
   { href: "/quote/new", label: "新建报价", icon: FileText },
 ] as const;
 

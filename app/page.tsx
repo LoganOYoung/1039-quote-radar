@@ -33,8 +33,8 @@ const valueItems: { icon: LucideIcon; title: string; desc: string }[] = [
   },
   {
     icon: BarChart3,
-    title: "锚定汇率与仪表盘",
-    desc: "报价页可展示你设定的汇率；仪表盘可查看每条报价的打开次数、访问来源与待授权申请",
+    title: "锚定汇率与我的报价",
+    desc: "报价页可展示你设定的汇率；我的报价可查看每条报价的打开次数、访问来源与待授权申请",
   },
 ];
 

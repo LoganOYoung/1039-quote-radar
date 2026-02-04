@@ -69,7 +69,7 @@ export default async function AdminPage() {
             href="/dashboard"
             className="text-sm text-slate-500 hover:text-slate-700"
           >
-            返回仪表盘
+            返回我的报价
           </Link>
         </header>
 

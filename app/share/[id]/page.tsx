@@ -40,7 +40,7 @@ export default async function SharePage({ params }: Props) {
         </div>
         <p className="mt-6 text-center">
           <Link href="/dashboard" className="text-sm text-emerald-600 hover:underline">
-            返回仪表盘
+            返回我的报价
           </Link>
         </p>
       </div>

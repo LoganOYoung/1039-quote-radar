@@ -1123,7 +1123,7 @@ export default function QuoteNewPage() {
             </div>
             <p className="text-xs text-slate-500 mt-2">「复制带话术」可直接粘贴到微信/WhatsApp，含产品名、价格与链接</p>
             <Link href="/dashboard" className="inline-block mt-3 text-sm text-emerald-400 hover:underline">
-              去仪表盘查看动态 →
+              去我的报价查看动态 →
             </Link>
           </section>
         )}
