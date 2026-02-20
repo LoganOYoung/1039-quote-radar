@@ -57,7 +57,7 @@ export default function ShareCardDownload({ productName, fobPriceUsd, customerNa
               Prepared for <span className="text-slate-700 font-medium">{customerName}</span>
             </p>
           )}
-          <p className="mt-4 text-xs text-slate-400">详情点击链接 · Powered by 1039 Quote Radar</p>
+          <p className="mt-4 text-xs text-slate-400">View details at link · Powered by 1039 Quote Radar</p>
         </div>
       </div>
       <button
@@ -67,7 +67,7 @@ export default function ShareCardDownload({ productName, fobPriceUsd, customerNa
         className="mt-4 w-full rounded-none bg-emerald-600 py-3 px-4 min-h-[48px] text-white font-medium hover:bg-emerald-500 disabled:opacity-50 flex items-center justify-center gap-2"
       >
         <Download className="w-5 h-5" />
-        {loading ? "生成中…" : "保存为图片"}
+        {loading ? "Saving…" : "Save as image"}
       </button>
     </div>
   );

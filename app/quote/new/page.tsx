@@ -210,8 +210,8 @@ export default function QuoteNewPage() {
 
   const copyWithScript = () => {
     if (!generatedLink) return;
-    const pricePart = fobPreview != null ? `，FOB $${fobPreview} USD` : "";
-    const text = `【报价】${productName.trim() || "产品"}${pricePart}，详情点击：${generatedLink}`;
+    const pricePart = fobPreview != null ? `, FOB $${fobPreview} USD` : "";
+    const text = `Quote: ${productName.trim() || "Product"}${pricePart}. View details: ${generatedLink}`;
     navigator.clipboard.writeText(text);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);

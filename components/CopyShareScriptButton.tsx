@@ -14,8 +14,8 @@ export default function CopyShareScriptButton({ productName, fobPriceUsd, link, 
   const [copied, setCopied] = useState(false);
 
   const handleCopy = () => {
-    const pricePart = fobPriceUsd != null ? `，FOB $${Number(fobPriceUsd).toFixed(2)} USD` : "";
-    const text = `【报价】${(productName || "产品").trim()}${pricePart}，详情点击：${link}`;
+    const pricePart = fobPriceUsd != null ? `, FOB $${Number(fobPriceUsd).toFixed(2)} USD` : "";
+    const text = `Quote: ${(productName || "Product").trim()}${pricePart}. View details: ${link}`;
     navigator.clipboard.writeText(text);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
@@ -26,14 +26,14 @@ export default function CopyShareScriptButton({ productName, fobPriceUsd, link, 
       type="button"
       onClick={handleCopy}
       className={className}
-      title="复制带话术（可粘贴到微信/WhatsApp）"
+      title="Copy with message (paste to WeChat/WhatsApp)"
     >
       {copied ? (
-        <span className="text-emerald-400 text-xs">已复制</span>
+        <span className="text-emerald-400 text-xs">Copied</span>
       ) : (
         <>
           <Copy className="w-3.5 h-3.5 inline-block mr-0.5" aria-hidden />
-          <span className="text-xs">话术</span>
+          <span className="text-xs">Copy message</span>
         </>
       )}
     </button>
