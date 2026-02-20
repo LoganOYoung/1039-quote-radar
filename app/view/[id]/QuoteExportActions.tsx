@@ -40,23 +40,23 @@ export default function QuoteExportActions({ children }: Props) {
       <div ref={cardRef} className="print:shadow-none">
         {children}
       </div>
-      <div className="flex flex-wrap gap-3 mt-5 print:hidden" role="toolbar" aria-label="Document actions">
+      <div className="flex flex-wrap gap-3 mt-8 print:hidden" role="toolbar" aria-label="Document actions">
         <button
           type="button"
           onClick={handlePrint}
           disabled={!!saving}
-          className="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 shadow-sm hover:bg-slate-50 hover:border-slate-300 active:bg-slate-100 disabled:opacity-50 transition-colors"
+          className="inline-flex items-center gap-2 rounded border border-neutral-300 bg-white px-4 py-2.5 text-xs font-medium text-neutral-700 tracking-wide uppercase hover:bg-neutral-50 active:bg-neutral-100 disabled:opacity-50 transition-colors"
         >
-          <FileDown className="w-4 h-4 shrink-0" aria-hidden />
+          <FileDown className="w-3.5 h-3.5 shrink-0" aria-hidden />
           Save as PDF
         </button>
         <button
           type="button"
           onClick={handleSaveImage}
           disabled={!!saving}
-          className="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 shadow-sm hover:bg-slate-50 hover:border-slate-300 active:bg-slate-100 disabled:opacity-50 transition-colors"
+          className="inline-flex items-center gap-2 rounded border border-neutral-300 bg-white px-4 py-2.5 text-xs font-medium text-neutral-700 tracking-wide uppercase hover:bg-neutral-50 active:bg-neutral-100 disabled:opacity-50 transition-colors"
         >
-          <Image className="w-4 h-4 shrink-0" aria-hidden />
+          <Image className="w-3.5 h-3.5 shrink-0" aria-hidden />
           {saving === "image" ? "Saving…" : "Save as image"}
         </button>
       </div>

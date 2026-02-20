@@ -41,7 +41,7 @@ export async function GET(
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
-          background: "#f8fafc",
+          background: "#f5f5f5",
           padding: 48,
         }}
       >
@@ -52,21 +52,21 @@ export async function GET(
             alignItems: "center",
             justifyContent: "center",
             background: "white",
-            borderRadius: 16,
-            padding: "48px 56px",
+            padding: "56px 64px",
             width: "90%",
             maxWidth: 1000,
-            border: "1px solid #e2e8f0",
-            boxShadow: "0 1px 3px 0 rgb(0 0 0 / 0.05)",
+            border: "1px solid #e5e5e5",
+            boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
           }}
         >
           {companyName && (
             <div
               style={{
-                fontSize: 22,
-                color: "#475569",
+                fontSize: 20,
+                color: "#525252",
                 marginBottom: 12,
                 fontWeight: 600,
+                letterSpacing: "-0.02em",
               }}
             >
               {companyName}
@@ -74,32 +74,35 @@ export async function GET(
           )}
           <div
             style={{
-              fontSize: 14,
-              color: "#94a3b8",
-              marginBottom: 8,
+              fontSize: 11,
+              color: "#a3a3a3",
+              marginBottom: 10,
               textTransform: "uppercase",
-              letterSpacing: "0.05em",
+              letterSpacing: "0.2em",
+              fontWeight: 500,
             }}
           >
             Price Quotation
           </div>
           <div
             style={{
-              fontSize: 34,
-              fontWeight: 700,
-              color: "#0f172a",
+              fontSize: 32,
+              fontWeight: 600,
+              color: "#171717",
               textAlign: "center",
-              marginBottom: 20,
-              lineHeight: 1.2,
+              marginBottom: 24,
+              lineHeight: 1.25,
+              letterSpacing: "-0.02em",
             }}
           >
             {productName}
           </div>
           <div
             style={{
-              fontSize: 30,
-              fontWeight: 700,
-              color: "#0d9488",
+              fontSize: 28,
+              fontWeight: 600,
+              color: "#171717",
+              letterSpacing: "-0.02em",
             }}
           >
             FOB {price}
@@ -107,9 +110,10 @@ export async function GET(
           {!hasBrand && (
             <div
               style={{
-                fontSize: 16,
-                color: "#94a3b8",
-                marginTop: 28,
+                fontSize: 14,
+                color: "#a3a3a3",
+                marginTop: 32,
+                letterSpacing: "0.02em",
               }}
             >
               1039 Quote Radar

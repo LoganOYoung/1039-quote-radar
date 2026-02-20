@@ -83,14 +83,14 @@ export default async function ViewQuotePage({ params }: Props) {
     : null;
 
   return (
-    <main className="min-h-screen bg-slate-50/80 text-slate-900 overflow-x-hidden print:bg-white">
+    <main className="min-h-screen bg-neutral-100 text-neutral-900 overflow-x-hidden print:bg-white">
       <div className="print:hidden"><TrackDuration quoteId={quote.id} /></div>
 
-      {/* Portal-style top bar: logo + company name */}
-      <header className="bg-white border-b border-slate-200/80 print:border-b print:bg-white">
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 h-16 sm:h-[4.5rem] flex items-center justify-between gap-4 min-w-0">
+      {/* 简洁欧美顶栏：白底、细线、左 logo/竖线 + 标题 */}
+      <header className="bg-white border-b border-neutral-200/90 print:border-b print:bg-white">
+        <div className="max-w-2xl mx-auto px-5 sm:px-8 h-14 sm:h-16 flex items-center gap-4 min-w-0">
           {companyLogoUrl ? (
-            <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-lg bg-slate-50 flex items-center justify-center overflow-hidden shrink-0 border border-slate-100">
+            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-md bg-neutral-50 flex items-center justify-center overflow-hidden shrink-0 border border-neutral-100">
               <img
                 src={companyLogoUrl}
                 alt={companyName || "Logo"}
@@ -98,41 +98,40 @@ export default async function ViewQuotePage({ params }: Props) {
               />
             </div>
           ) : (
-            <span className="w-10 shrink-0" aria-hidden />
+            <span className="w-px h-6 bg-neutral-300 shrink-0" aria-hidden />
           )}
-          <h1 className="flex-1 text-center text-lg sm:text-xl font-semibold text-slate-800 truncate">
+          <h1 className="text-base sm:text-lg font-semibold text-neutral-900 tracking-tight truncate">
             {companyName || "Quotation"}
           </h1>
-          <span className={companyLogoUrl ? "w-10 shrink-0" : "hidden"} aria-hidden />
+          {!companyName && !companyLogoUrl && (
+            <span className="text-xs text-neutral-500 font-normal tracking-wide hidden sm:inline">Price Quotation</span>
+          )}
         </div>
       </header>
 
-      <div className="max-w-2xl mx-auto px-3 sm:px-6 py-6 sm:py-10 min-w-0">
+      <div className="max-w-2xl mx-auto px-4 sm:px-8 py-10 sm:py-16 min-w-0">
         <QuoteExportActions>
-          {/* Document card */}
-          <article
-            className="bg-white rounded-xl shadow-sm border border-slate-200/90 overflow-hidden print:rounded-none print:shadow-none"
-            style={{ boxShadow: "0 1px 3px 0 rgb(0 0 0 / 0.05), 0 1px 2px -1px rgb(0 0 0 / 0.05)" }}
-          >
-            <div className="px-6 sm:px-8 py-6 sm:py-8">
-              <p className="text-xs font-medium text-slate-400 uppercase tracking-wider mb-1">Price Quotation</p>
-              <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-slate-500 mb-6">
-                <span className="font-medium text-teal-600">Ref: {quote.short_id}</span>
-                {quoteDate && <span>Date: {quoteDate}</span>}
+          {/* 欧美风白卡：大量留白、中性色、无彩色装饰 */}
+          <article className="bg-white border border-neutral-200/80 overflow-hidden print:rounded-none print:shadow-none print:border-neutral-300">
+            <div className="px-6 sm:px-10 py-8 sm:py-12">
+              <p className="text-[11px] font-medium text-neutral-400 uppercase tracking-[0.2em] mb-4">Price Quotation</p>
+              <div className="flex flex-wrap gap-x-6 gap-y-0.5 text-xs text-neutral-500 mb-8">
+                <span className="font-medium text-neutral-600">Ref. {quote.short_id}</span>
+                {quoteDate && <span>Date {quoteDate}</span>}
               </div>
               {rateLocked && (
-                <p className="text-xs text-slate-500 mb-5 pb-5 border-b border-slate-100">
+                <p className="text-xs text-neutral-500 mb-6 pb-6 border-b border-neutral-100">
                   Exchange rate (locked): 1 USD = {Number(quote.exchange_rate_locked).toFixed(2)} CNY
                   {rateUpdatedAt && (
-                    <span> (as of {new Date(quote.rate_updated_at).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })})</span>
+                    <span className="text-neutral-400"> — as of {new Date(quote.rate_updated_at).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}</span>
                   )}
                 </p>
               )}
 
-              <dl className="space-y-6 text-sm">
+              <dl className="space-y-8 text-sm">
                 <div>
-                  <dt className="text-slate-500 uppercase tracking-wide text-xs font-medium mb-1">Product</dt>
-                  <dd className="font-semibold text-slate-900 text-lg leading-snug">{quote.product_name}</dd>
+                  <dt className="text-neutral-500 uppercase tracking-[0.15em] text-[11px] font-medium mb-2">Product</dt>
+                  <dd className="font-semibold text-neutral-900 text-xl sm:text-2xl leading-snug tracking-tight">{quote.product_name}</dd>
                 </div>
                 {quote.access_controlled ? (
                   <PriceSection
@@ -145,29 +144,29 @@ export default async function ViewQuotePage({ params }: Props) {
                 ) : (
                   <>
                     <div>
-                      <dt className="text-slate-500 uppercase tracking-wide text-xs font-medium mb-1">FOB Price (USD)</dt>
-                      <dd className="font-bold text-2xl sm:text-3xl text-teal-600 mt-0.5 tracking-tight">
+                      <dt className="text-neutral-500 uppercase tracking-[0.15em] text-[11px] font-medium mb-2">FOB Price (USD)</dt>
+                      <dd className="font-semibold text-3xl sm:text-4xl text-neutral-900 mt-0.5 tracking-tight tabular-nums font-serif">
                         $ {quote.fob_price_usd != null ? Number(quote.fob_price_usd).toFixed(2) : "—"}
                       </dd>
                     </div>
                     {quote.customer_name && (
                       <div>
-                        <dt className="text-slate-500 uppercase tracking-wide text-xs font-medium">Prepared for</dt>
-                        <dd className="text-slate-700 mt-1 font-medium">{quote.customer_name}</dd>
+                        <dt className="text-neutral-500 uppercase tracking-[0.15em] text-[11px] font-medium mb-1">Prepared for</dt>
+                        <dd className="text-neutral-700 font-medium">{quote.customer_name}</dd>
                       </div>
                     )}
                   </>
                 )}
               </dl>
 
-              <p className="mt-8 pt-6 border-t border-slate-100 text-xs text-slate-500">
+              <p className="mt-10 pt-6 border-t border-neutral-100 text-xs text-neutral-500">
                 Prices subject to confirmation. Valid for 7 days from date of issue.
               </p>
             </div>
           </article>
         </QuoteExportActions>
 
-        <footer className="mt-10 text-center text-xs text-slate-400 space-y-1 print:mt-6">
+        <footer className="mt-12 text-center text-[11px] text-neutral-400 tracking-wide space-y-1 print:mt-8">
           <p>Viewing of this page may be recorded for security.</p>
           {!(companyName || companyLogoUrl) && <p>Powered by 1039 Quote Radar</p>}
         </footer>
