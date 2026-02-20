@@ -22,7 +22,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const title = quote.company_name
     ? `${quote.product_name} - ${quote.company_name}`
     : `${quote.product_name} - $${quote.fob_price_usd != null ? Number(quote.fob_price_usd).toFixed(2) : ""} USD`;
-  const description = `FOB Price: $${quote.fob_price_usd != null ? Number(quote.fob_price_usd).toFixed(2) : "—"} USD · 1039 Quote Radar`;
+  const hasBrand = !!(quote.company_name?.trim());
+  const description = hasBrand
+    ? `FOB Price: $${quote.fob_price_usd != null ? Number(quote.fob_price_usd).toFixed(2) : "—"} USD`
+    : `FOB Price: $${quote.fob_price_usd != null ? Number(quote.fob_price_usd).toFixed(2) : "—"} USD · 1039 Quote Radar`;
   const ogImageUrl = `${siteUrl.replace(/\/$/, "")}/api/og/quote/${shortId}`;
   return {
     title,
@@ -80,88 +83,93 @@ export default async function ViewQuotePage({ params }: Props) {
     : null;
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-slate-100 via-white to-slate-50 text-gray-900 overflow-x-hidden print:bg-white">
+    <main className="min-h-screen bg-slate-50/80 text-slate-900 overflow-x-hidden print:bg-white">
       <div className="print:hidden"><TrackDuration quoteId={quote.id} /></div>
-      <div className="max-w-lg mx-auto px-3 sm:px-6 py-6 sm:py-12 min-w-0">
-        <QuoteExportActions>
-        {/* Header: gradient band + logo & company */}
-        <header className="rounded-none overflow-hidden bg-gradient-to-r from-teal-600 via-emerald-600 to-cyan-600 shadow-sm">
-          <div className="px-6 py-6 sm:py-8 flex flex-col items-center text-center">
-            {companyLogoUrl ? (
-              <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-none bg-white/95 shadow-md flex items-center justify-center overflow-hidden mb-3 shrink-0">
-                <img
-                  src={companyLogoUrl}
-                  alt={companyName || "Company logo"}
-                  className="w-full h-full object-contain"
-                />
-              </div>
-            ) : null}
-            {(companyName || !companyLogoUrl) && (
-              <h1 className="text-xl sm:text-2xl font-bold text-white drop-shadow-sm">
-                {companyName || "Quotation"}
-              </h1>
-            )}
-            <p className="mt-1 text-teal-100 text-sm font-medium">Price Quotation</p>
-          </div>
-        </header>
 
-        {/* Card: content */}
-        <article className="bg-white rounded-none shadow-sm border border-slate-200 -mt-px overflow-hidden">
-          <div className="px-6 sm:px-8 py-6 sm:py-8">
-            <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-slate-500 mb-5">
-              <span className="font-medium text-teal-600">Ref: {quote.short_id}</span>
-              {quoteDate && <span>Date: {quoteDate}</span>}
+      {/* Portal-style top bar: logo + company name */}
+      <header className="bg-white border-b border-slate-200/80 print:border-b print:bg-white">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 h-16 sm:h-[4.5rem] flex items-center justify-between gap-4 min-w-0">
+          {companyLogoUrl ? (
+            <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-lg bg-slate-50 flex items-center justify-center overflow-hidden shrink-0 border border-slate-100">
+              <img
+                src={companyLogoUrl}
+                alt={companyName || "Logo"}
+                className="w-full h-full object-contain"
+              />
             </div>
-            {rateLocked && (
-              <p className="text-xs text-slate-500 mb-4 pb-4 border-b border-slate-100">
-                Exchange rate (locked): 1 USD = {Number(quote.exchange_rate_locked).toFixed(2)} CNY
-                {rateUpdatedAt && (
-                  <span> (as of {new Date(quote.rate_updated_at).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })})</span>
-                )}
-              </p>
-            )}
+          ) : (
+            <span className="w-10 shrink-0" aria-hidden />
+          )}
+          <h1 className="flex-1 text-center text-lg sm:text-xl font-semibold text-slate-800 truncate">
+            {companyName || "Quotation"}
+          </h1>
+          <span className={companyLogoUrl ? "w-10 shrink-0" : "hidden"} aria-hidden />
+        </div>
+      </header>
 
-            <dl className="space-y-5 text-sm">
-              <div>
-                <dt className="text-slate-500 uppercase tracking-wide text-xs font-medium">Product</dt>
-                <dd className="font-semibold text-gray-900 mt-1 text-base">{quote.product_name}</dd>
+      <div className="max-w-2xl mx-auto px-3 sm:px-6 py-6 sm:py-10 min-w-0">
+        <QuoteExportActions>
+          {/* Document card */}
+          <article
+            className="bg-white rounded-xl shadow-sm border border-slate-200/90 overflow-hidden print:rounded-none print:shadow-none"
+            style={{ boxShadow: "0 1px 3px 0 rgb(0 0 0 / 0.05), 0 1px 2px -1px rgb(0 0 0 / 0.05)" }}
+          >
+            <div className="px-6 sm:px-8 py-6 sm:py-8">
+              <p className="text-xs font-medium text-slate-400 uppercase tracking-wider mb-1">Price Quotation</p>
+              <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-slate-500 mb-6">
+                <span className="font-medium text-teal-600">Ref: {quote.short_id}</span>
+                {quoteDate && <span>Date: {quoteDate}</span>}
               </div>
-              {quote.access_controlled ? (
-                <PriceSection
-                  quoteId={quote.id}
-                  productName={quote.product_name}
-                  fobPriceUsd={quote.fob_price_usd != null ? Number(quote.fob_price_usd) : null}
-                  customerName={quote.customer_name}
-                  initialAccessGranted={initialAccessGranted}
-                />
-              ) : (
-                <>
-                  <div>
-                    <dt className="text-slate-500 uppercase tracking-wide text-xs font-medium">FOB Price (USD)</dt>
-                    <dd className="font-bold text-2xl text-teal-600 mt-1">
-                      $ {quote.fob_price_usd != null ? Number(quote.fob_price_usd).toFixed(2) : "—"}
-                    </dd>
-                  </div>
-                  {quote.customer_name && (
-                    <div>
-                      <dt className="text-slate-500 uppercase tracking-wide text-xs font-medium">Prepared for</dt>
-                      <dd className="text-gray-700 mt-1">{quote.customer_name}</dd>
-                    </div>
+              {rateLocked && (
+                <p className="text-xs text-slate-500 mb-5 pb-5 border-b border-slate-100">
+                  Exchange rate (locked): 1 USD = {Number(quote.exchange_rate_locked).toFixed(2)} CNY
+                  {rateUpdatedAt && (
+                    <span> (as of {new Date(quote.rate_updated_at).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })})</span>
                   )}
-                </>
+                </p>
               )}
-            </dl>
 
-            <p className="mt-6 pt-5 border-t border-slate-100 text-xs text-slate-500">
-              Prices subject to confirmation. Valid for 7 days from date of issue.
-            </p>
-          </div>
-        </article>
+              <dl className="space-y-6 text-sm">
+                <div>
+                  <dt className="text-slate-500 uppercase tracking-wide text-xs font-medium mb-1">Product</dt>
+                  <dd className="font-semibold text-slate-900 text-lg leading-snug">{quote.product_name}</dd>
+                </div>
+                {quote.access_controlled ? (
+                  <PriceSection
+                    quoteId={quote.id}
+                    productName={quote.product_name}
+                    fobPriceUsd={quote.fob_price_usd != null ? Number(quote.fob_price_usd) : null}
+                    customerName={quote.customer_name}
+                    initialAccessGranted={initialAccessGranted}
+                  />
+                ) : (
+                  <>
+                    <div>
+                      <dt className="text-slate-500 uppercase tracking-wide text-xs font-medium mb-1">FOB Price (USD)</dt>
+                      <dd className="font-bold text-2xl sm:text-3xl text-teal-600 mt-0.5 tracking-tight">
+                        $ {quote.fob_price_usd != null ? Number(quote.fob_price_usd).toFixed(2) : "—"}
+                      </dd>
+                    </div>
+                    {quote.customer_name && (
+                      <div>
+                        <dt className="text-slate-500 uppercase tracking-wide text-xs font-medium">Prepared for</dt>
+                        <dd className="text-slate-700 mt-1 font-medium">{quote.customer_name}</dd>
+                      </div>
+                    )}
+                  </>
+                )}
+              </dl>
+
+              <p className="mt-8 pt-6 border-t border-slate-100 text-xs text-slate-500">
+                Prices subject to confirmation. Valid for 7 days from date of issue.
+              </p>
+            </div>
+          </article>
         </QuoteExportActions>
 
-        <footer className="mt-8 text-center text-xs text-slate-400 space-y-1 print:mt-4">
+        <footer className="mt-10 text-center text-xs text-slate-400 space-y-1 print:mt-6">
           <p>Viewing of this page may be recorded for security.</p>
-          <p>Powered by 1039 Quote Radar</p>
+          {!(companyName || companyLogoUrl) && <p>Powered by 1039 Quote Radar</p>}
         </footer>
       </div>
     </main>

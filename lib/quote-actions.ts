@@ -77,9 +77,35 @@ export async function createQuote(input: CreateQuoteInput): Promise<{ shortId: s
   if (input.companyName?.trim()) row.company_name = input.companyName.trim();
   if (input.companyLogoUrl?.trim()) row.company_logo_url = input.companyLogoUrl.trim();
 
-  const { error } = await supabase.from("quotes").insert(row);
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
+  if (!supabaseUrl || supabaseUrl.includes("placeholder")) {
+    return {
+      shortId: "",
+      error: "未配置 Supabase：请在项目根目录 .env.local 中填写 NEXT_PUBLIC_SUPABASE_URL 和 NEXT_PUBLIC_SUPABASE_ANON_KEY",
+    };
+  }
 
-  if (error) return { shortId: "", error: error.message };
+  try {
+    const { error } = await supabase.from("quotes").insert(row);
+    if (error) return { shortId: "", error: error.message };
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    const isNetwork =
+      msg.includes("fetch failed") ||
+      msg.includes("ECONNREFUSED") ||
+      msg.includes("ETIMEDOUT") ||
+      msg.includes("ENOTFOUND") ||
+      (err instanceof Error && err.cause != null);
+    if (isNetwork) {
+      return {
+        shortId: "",
+        error:
+          "数据库连接失败，请检查：1) .env.local 中 Supabase 地址与 Key 是否正确 2) 网络能否访问 Supabase 3) Supabase 项目是否已暂停（控制台 Resume）",
+      };
+    }
+    return { shortId: "", error: msg || "保存报价失败，请重试" };
+  }
+
   revalidatePath("/dashboard");
   return { shortId };
 }

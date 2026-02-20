@@ -25,6 +25,7 @@ export async function GET(
 
   const productName = (quote.product_name || "Quotation").slice(0, 40);
   const companyName = quote.company_name?.trim()?.slice(0, 30) || "";
+  const hasBrand = !!companyName;
   const price =
     quote.fob_price_usd != null
       ? `$${Number(quote.fob_price_usd).toFixed(2)} USD`
@@ -40,7 +41,7 @@ export async function GET(
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
-          background: "linear-gradient(135deg, #0d9488 0%, #059669 50%, #0891b2 100%)",
+          background: "#f8fafc",
           padding: 48,
         }}
       >
@@ -52,17 +53,20 @@ export async function GET(
             justifyContent: "center",
             background: "white",
             borderRadius: 16,
-            padding: "40px 48px",
+            padding: "48px 56px",
             width: "90%",
             maxWidth: 1000,
+            border: "1px solid #e2e8f0",
+            boxShadow: "0 1px 3px 0 rgb(0 0 0 / 0.05)",
           }}
         >
           {companyName && (
             <div
               style={{
-                fontSize: 24,
-                color: "#64748b",
-                marginBottom: 8,
+                fontSize: 22,
+                color: "#475569",
+                marginBottom: 12,
+                fontWeight: 600,
               }}
             >
               {companyName}
@@ -70,33 +74,47 @@ export async function GET(
           )}
           <div
             style={{
-              fontSize: 36,
+              fontSize: 14,
+              color: "#94a3b8",
+              marginBottom: 8,
+              textTransform: "uppercase",
+              letterSpacing: "0.05em",
+            }}
+          >
+            Price Quotation
+          </div>
+          <div
+            style={{
+              fontSize: 34,
               fontWeight: 700,
               color: "#0f172a",
               textAlign: "center",
-              marginBottom: 16,
+              marginBottom: 20,
+              lineHeight: 1.2,
             }}
           >
             {productName}
           </div>
           <div
             style={{
-              fontSize: 32,
+              fontSize: 30,
               fontWeight: 700,
               color: "#0d9488",
             }}
           >
             FOB {price}
           </div>
-          <div
-            style={{
-              fontSize: 18,
-              color: "#94a3b8",
-              marginTop: 24,
-            }}
-          >
-            Price Quotation · 1039 Quote Radar
-          </div>
+          {!hasBrand && (
+            <div
+              style={{
+                fontSize: 16,
+                color: "#94a3b8",
+                marginTop: 28,
+              }}
+            >
+              1039 Quote Radar
+            </div>
+          )}
         </div>
       </div>
     ),

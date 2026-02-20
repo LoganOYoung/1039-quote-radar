@@ -28,7 +28,8 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=你的anon key
 DEFAULT_EXCHANGE_RATE=7.25
 ```
 
-3. 在 Supabase 控制台 → **SQL Editor** 中执行 `supabase/schema.sql` 中的全部 SQL，创建表与 RPC。
+3. 在 Supabase 控制台 → **SQL Editor** 中执行 `supabase/schema.sql` 中的全部 SQL，创建表与 RPC。  
+   **若数据库是早期创建的**，报错 `Could not find the 'company_name' column` 时，请再执行一次 `supabase/patch-existing-db.sql` 补全缺失列。
 
 ### 3. 启动开发服务器
 

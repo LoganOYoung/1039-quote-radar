@@ -2,7 +2,7 @@
 
 import { useState, useCallback, useEffect } from "react";
 import Link from "next/link";
-import { Radar, Copy, Check, Sparkles, ChevronDown, ChevronUp, ChevronLeft, Loader2 } from "lucide-react";
+import { Radar, Copy, Check, Sparkles, ChevronDown, ChevronUp, ChevronLeft, Loader2, RefreshCw } from "lucide-react";
 import { parsePasteText } from "@/lib/parse-paste";
 import { createQuote } from "@/lib/quote-actions";
 import {
@@ -63,6 +63,10 @@ export default function QuoteNewPage() {
   const [error, setError] = useState("");
   const [mobileStep, setMobileStep] = useState(1);
   const [isMobile, setIsMobile] = useState(false);
+  const [liveRate, setLiveRate] = useState<number | null>(null);
+  const [liveRateLoading, setLiveRateLoading] = useState(true);
+  const [liveRateError, setLiveRateError] = useState<string | null>(null);
+  const [liveRateDate, setLiveRateDate] = useState<string | null>(null);
 
   useEffect(() => {
     const mq = window.matchMedia("(max-width: 639px)");
@@ -71,6 +75,27 @@ export default function QuoteNewPage() {
     mq.addEventListener("change", update);
     return () => mq.removeEventListener("change", update);
   }, []);
+
+  const fetchLiveRate = useCallback(async () => {
+    setLiveRateLoading(true);
+    setLiveRateError(null);
+    try {
+      const res = await fetch("/api/exchange-rate");
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || "获取失败");
+      setLiveRate(data.rate ?? null);
+      setLiveRateDate(data.date ?? null);
+    } catch (e) {
+      setLiveRateError(e instanceof Error ? e.message : "获取失败");
+      setLiveRate(null);
+    } finally {
+      setLiveRateLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchLiveRate();
+  }, [fetchLiveRate]);
 
   const handleParse = useCallback(() => {
     if (!paste.trim()) return;
@@ -134,36 +159,46 @@ export default function QuoteNewPage() {
         finalDomesticCny = !isNaN(v) && v >= 0 ? v : undefined;
       }
     }
-    const res = await createQuote({
-      productName: productName.trim(),
-      exwPrice: exw,
-      profitMargin: isNaN(margin) ? 15 : margin,
-      customerName: customerName.trim() || undefined,
-      tradeMode,
-      exchangeRate: isNaN(rate) ? 7.25 : rate,
-      exchangeRateLocked: lockRate ? (isNaN(rate) ? 7.25 : rate) : undefined,
-      accessControlled: accessControlled || undefined,
-      shipFrom: tradeMode === "1039" ? shipFrom : undefined,
-      domesticCny: finalDomesticCny,
-      companyName: companyName.trim() || undefined,
-      companyLogoUrl: companyLogoUrl.trim() || undefined,
-      agentFee: (() => {
-        const v = parseFloat(agentFeeOverride);
-        return !isNaN(v) && v >= 0 ? v : undefined;
-      })(),
-      settlementFactor: (() => {
-        const v = parseFloat(settlementFactorOverride);
-        return !isNaN(v) && v > 0 && v <= 1 ? v : undefined;
-      })(),
-      orderQuantity: subOrderQty > 1 ? subOrderQty : undefined,
-    });
-    setLoading(false);
-    if (res.error) {
-      setError(res.error);
-      return;
+    try {
+      const res = await createQuote({
+        productName: productName.trim(),
+        exwPrice: exw,
+        profitMargin: isNaN(margin) ? 15 : margin,
+        customerName: customerName.trim() || undefined,
+        tradeMode,
+        exchangeRate: isNaN(rate) ? 7.25 : rate,
+        exchangeRateLocked: lockRate ? (isNaN(rate) ? 7.25 : rate) : undefined,
+        accessControlled: accessControlled || undefined,
+        shipFrom: tradeMode === "1039" ? shipFrom : undefined,
+        domesticCny: finalDomesticCny,
+        companyName: companyName.trim() || undefined,
+        companyLogoUrl: companyLogoUrl.trim() || undefined,
+        agentFee: (() => {
+          const v = parseFloat(agentFeeOverride);
+          return !isNaN(v) && v >= 0 ? v : undefined;
+        })(),
+        settlementFactor: (() => {
+          const v = parseFloat(settlementFactorOverride);
+          return !isNaN(v) && v > 0 && v <= 1 ? v : undefined;
+        })(),
+        orderQuantity: subOrderQty > 1 ? subOrderQty : undefined,
+      });
+      if (res.error) {
+        setError(res.error);
+        return;
+      }
+      const base = typeof window !== "undefined" ? window.location.origin : "";
+      setGeneratedLink(`${base}/view/${res.shortId}`);
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : String(e);
+      setError(
+        msg.includes("fetch") || msg.includes("Failed to fetch")
+          ? "网络或服务异常，请检查 Supabase 配置与网络后重试"
+          : msg || "生成失败，请重试"
+      );
+    } finally {
+      setLoading(false);
     }
-    const base = typeof window !== "undefined" ? window.location.origin : "";
-    setGeneratedLink(`${base}/view/${res.shortId}`);
   };
 
   const copyLink = () => {
@@ -299,6 +334,8 @@ export default function QuoteNewPage() {
         ? seaFreightUsdFcl
         : !isNaN(freightUsdNum) && freightUsdNum >= 0 ? freightUsdNum : 0;
   const totalFreightSurchargeUsd = baseFreightUsd + surchargeUsdVal;
+  const hasFreight = totalFreightSurchargeUsd > 0;
+  const hasInsurance = !isNaN(insuranceUsdNum) && insuranceUsdNum > 0;
   const effectiveCfr =
     fobPreview != null
       ? Number(calcCfrUsd(fobPreview, totalFreightSurchargeUsd).toFixed(2))
@@ -307,6 +344,9 @@ export default function QuoteNewPage() {
     effectiveCfr != null
       ? Number((effectiveCfr + Math.max(0, isNaN(insuranceUsdNum) ? 0 : insuranceUsdNum)).toFixed(2))
       : null;
+  // 仅在有运费或保险费时才在报价明细中展示 CFR/CIF，避免与 FOB 显示成相同金额
+  const showCfrInSummary = effectiveCfr != null && hasFreight && effectiveCfr > (fobPreview ?? 0);
+  const showCifInSummary = effectiveCif != null && (hasFreight || hasInsurance) && effectiveCif > (fobPreview ?? 0);
 
   const totalSteps = 5;
   const canGoNext =
@@ -798,6 +838,51 @@ export default function QuoteNewPage() {
                 className="w-20 rounded-none bg-white border border-slate-200 text-slate-900 px-3 py-3 sm:py-2 min-h-[48px] sm:min-h-0"
               />
             </div>
+            <div className="flex flex-wrap items-center gap-2 min-h-[48px] sm:min-h-0">
+              {liveRateLoading ? (
+                <span className="text-sm text-slate-400 flex items-center gap-1">
+                  <Loader2 className="w-3.5 h-3.5 animate-spin" aria-hidden />
+                  获取实时汇率…
+                </span>
+              ) : liveRateError ? (
+                <span className="text-sm text-amber-600">
+                  实时汇率暂不可用
+                  <button
+                    type="button"
+                    onClick={fetchLiveRate}
+                    className="ml-1 text-emerald-600 hover:underline"
+                  >
+                    重试
+                  </button>
+                </span>
+              ) : liveRate != null ? (
+                <>
+                  <span className="text-sm text-slate-500">
+                    实时 1 USD ≈ <span className="font-medium text-slate-700">{liveRate.toFixed(4)}</span> CNY
+                    {liveRateDate && (
+                      <span className="text-slate-400 ml-1">({liveRateDate})</span>
+                    )}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setExchangeRate(liveRate.toFixed(2))}
+                    className="text-sm font-medium text-emerald-600 hover:text-emerald-700 hover:underline"
+                  >
+                    采用
+                  </button>
+                  <button
+                    type="button"
+                    onClick={fetchLiveRate}
+                    disabled={liveRateLoading}
+                    className="p-1 text-slate-400 hover:text-slate-600 disabled:opacity-50"
+                    title="刷新实时汇率"
+                    aria-label="刷新实时汇率"
+                  >
+                    <RefreshCw className="w-3.5 h-3.5" />
+                  </button>
+                </>
+              ) : null}
+            </div>
             <label className="flex items-center gap-2 text-sm text-slate-400 cursor-pointer min-h-[44px] py-1 sm:py-0">
               <input
                 type="checkbox"
@@ -995,13 +1080,18 @@ export default function QuoteNewPage() {
                     />
                   </div>
                 </div>
-                {effectiveCfr != null && (
+                {(showCfrInSummary || showCifInSummary) ? (
                   <p className="text-xs text-slate-400">
-                    CFR ≈ <span className="text-emerald-400 font-medium">${effectiveCfr} USD</span>
-                    {effectiveCif != null && (
-                      <> &nbsp; CIF ≈ <span className="text-emerald-400 font-medium">${effectiveCif} USD</span></>
+                    {showCfrInSummary && effectiveCfr != null && (
+                      <>CFR ≈ <span className="text-emerald-400 font-medium">${effectiveCfr} USD</span></>
+                    )}
+                    {showCfrInSummary && showCifInSummary && effectiveCfr != null && " "}
+                    {showCifInSummary && effectiveCif != null && (
+                      <>CIF ≈ <span className="text-emerald-400 font-medium">${effectiveCif} USD</span></>
                     )}
                   </p>
+                ) : (
+                  <p className="text-xs text-slate-500">填写国际段运费或保险费后显示 CFR / CIF</p>
                 )}
                 <p className="text-xs text-slate-500">国际段运费请以货代报价为准，此处仅作汇总展示。</p>
               </div>
@@ -1037,8 +1127,8 @@ export default function QuoteNewPage() {
                 {orderQtyNum > 1 && <li>数量：{orderQtyNum} 件{pcsPerCtnNum > 0 ? `，${cartons} 箱` : ""}</li>}
                 <li>贸易方式：{tradeMode === "1039" ? "1039" : "一般贸易"}</li>
                 <li>FOB：{fobPreview != null ? <span className="text-emerald-400 font-medium">${fobPreview} USD</span> : "—"}{orderQtyNum > 1 && fobTotalUsd != null ? `（单价）；总 $${fobTotalUsd.toFixed(2)} USD` : ""}</li>
-                {effectiveCfr != null && <li>CFR：<span className="text-emerald-400">${effectiveCfr} USD</span></li>}
-                {effectiveCif != null && <li>CIF：<span className="text-emerald-400">${effectiveCif} USD</span></li>}
+                {showCfrInSummary && <li>CFR：<span className="text-emerald-400">${effectiveCfr} USD</span>{orderQtyNum > 1 && effectiveCfr != null ? `（单价）；总 $${(effectiveCfr * orderQtyNum).toFixed(2)} USD` : ""}</li>}
+                {showCifInSummary && <li>CIF：<span className="text-emerald-400">${effectiveCif} USD</span>{orderQtyNum > 1 && effectiveCif != null ? `（单价）；总 $${(effectiveCif * orderQtyNum).toFixed(2)} USD` : ""}</li>}
                 <li>锁定汇率：{lockRate ? "是" : "否"}{lockRate && rateNum && ` (${rateNum})`}</li>
                 <li>受控访问：{accessControlled ? "是" : "否"}</li>
               </ul>

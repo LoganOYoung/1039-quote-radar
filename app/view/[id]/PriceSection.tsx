@@ -91,7 +91,7 @@ export default function PriceSection({
             type="button"
             onClick={handleRequestAccess}
             disabled={loading}
-            className="mt-4 w-full rounded-none bg-blue-600 text-white px-4 py-3 font-medium hover:bg-blue-500 active:bg-blue-700 disabled:opacity-50 min-h-[44px]"
+            className="mt-4 w-full rounded-lg bg-teal-600 text-white px-4 py-3 font-medium hover:bg-teal-500 active:bg-teal-700 disabled:opacity-50 min-h-[44px] shadow-sm"
           >
             {loading ? "Submitting…" : "Request to View Price"}
           </button>
