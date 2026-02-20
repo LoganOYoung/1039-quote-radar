@@ -3,10 +3,11 @@
 import { useRef, useState } from "react";
 import { toPng } from "html-to-image";
 import { FileDown, Image } from "lucide-react";
+import { t, type ViewLang } from "@/lib/view-i18n";
 
-type Props = { children: React.ReactNode };
+type Props = { children: React.ReactNode; lang?: ViewLang };
 
-export default function QuoteExportActions({ children }: Props) {
+export default function QuoteExportActions({ children, lang = "en" }: Props) {
   const cardRef = useRef<HTMLDivElement>(null);
   const [saving, setSaving] = useState<"pdf" | "image" | null>(null);
 
@@ -45,19 +46,19 @@ export default function QuoteExportActions({ children }: Props) {
           type="button"
           onClick={handlePrint}
           disabled={!!saving}
-          className="inline-flex items-center gap-2 rounded border border-neutral-300 bg-white px-4 py-2.5 text-xs font-medium text-neutral-700 tracking-wide uppercase hover:bg-neutral-50 active:bg-neutral-100 disabled:opacity-50 transition-colors"
+          className="inline-flex items-center gap-2 rounded border border-neutral-300 dark:border-neutral-600 bg-white dark:bg-neutral-800 px-4 py-2.5 text-xs font-medium text-neutral-700 dark:text-neutral-300 tracking-wide uppercase hover:bg-neutral-50 dark:hover:bg-neutral-700 active:bg-neutral-100 disabled:opacity-50 transition-colors"
         >
           <FileDown className="w-3.5 h-3.5 shrink-0" aria-hidden />
-          Save as PDF
+          {t("saveAsPdf", lang)}
         </button>
         <button
           type="button"
           onClick={handleSaveImage}
           disabled={!!saving}
-          className="inline-flex items-center gap-2 rounded border border-neutral-300 bg-white px-4 py-2.5 text-xs font-medium text-neutral-700 tracking-wide uppercase hover:bg-neutral-50 active:bg-neutral-100 disabled:opacity-50 transition-colors"
+          className="inline-flex items-center gap-2 rounded border border-neutral-300 dark:border-neutral-600 bg-white dark:bg-neutral-800 px-4 py-2.5 text-xs font-medium text-neutral-700 dark:text-neutral-300 tracking-wide uppercase hover:bg-neutral-50 dark:hover:bg-neutral-700 active:bg-neutral-100 disabled:opacity-50 transition-colors"
         >
           <Image className="w-3.5 h-3.5 shrink-0" aria-hidden />
-          {saving === "image" ? "Saving…" : "Save as image"}
+          {saving === "image" ? t("saving", lang) : t("saveAsImage", lang)}
         </button>
       </div>
     </div>

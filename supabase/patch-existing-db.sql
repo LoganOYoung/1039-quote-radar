@@ -7,7 +7,13 @@ ALTER TABLE quotes
   ADD COLUMN IF NOT EXISTS company_logo_url TEXT,
   ADD COLUMN IF NOT EXISTS exchange_rate_locked DECIMAL(10, 4),
   ADD COLUMN IF NOT EXISTS rate_updated_at TIMESTAMPTZ,
-  ADD COLUMN IF NOT EXISTS access_controlled BOOLEAN DEFAULT false;
+  ADD COLUMN IF NOT EXISTS access_controlled BOOLEAN DEFAULT false,
+  ADD COLUMN IF NOT EXISTS order_quantity INTEGER,
+  ADD COLUMN IF NOT EXISTS port_of_loading TEXT,
+  ADD COLUMN IF NOT EXISTS payment_terms TEXT,
+  ADD COLUMN IF NOT EXISTS company_email TEXT,
+  ADD COLUMN IF NOT EXISTS company_phone TEXT,
+  ADD COLUMN IF NOT EXISTS remarks TEXT;
 
 -- 受控访问表（若不存在则无影响）
 CREATE TABLE IF NOT EXISTS quote_access_requests (

@@ -53,6 +53,11 @@ export default function QuoteNewPage() {
   const [yuanPerContainer, setYuanPerContainer] = useState("");
   const [companyName, setCompanyName] = useState("");
   const [companyLogoUrl, setCompanyLogoUrl] = useState("");
+  const [companyEmail, setCompanyEmail] = useState("");
+  const [companyPhone, setCompanyPhone] = useState("");
+  const [portOfLoading, setPortOfLoading] = useState("");
+  const [paymentTerms, setPaymentTerms] = useState("");
+  const [remarks, setRemarks] = useState("");
   const [orderQuantity, setOrderQuantity] = useState("");
   const [pcsPerCarton, setPcsPerCarton] = useState("");
   const [agentFeeOverride, setAgentFeeOverride] = useState("80");
@@ -173,6 +178,11 @@ export default function QuoteNewPage() {
         domesticCny: finalDomesticCny,
         companyName: companyName.trim() || undefined,
         companyLogoUrl: companyLogoUrl.trim() || undefined,
+        companyEmail: companyEmail.trim() || undefined,
+        companyPhone: companyPhone.trim() || undefined,
+        portOfLoading: portOfLoading.trim() || undefined,
+        paymentTerms: paymentTerms.trim() || undefined,
+        remarks: remarks.trim() || undefined,
         agentFee: (() => {
           const v = parseFloat(agentFeeOverride);
           return !isNaN(v) && v >= 0 ? v : undefined;
@@ -824,6 +834,58 @@ export default function QuoteNewPage() {
                 onChange={(e) => setCompanyLogoUrl(e.target.value)}
                 className="w-full rounded-none bg-white border border-slate-200 text-slate-900 p-3 py-3 sm:p-2.5 text-base sm:text-sm min-h-[48px] sm:min-h-0 focus:ring-2 focus:ring-emerald-500"
                 placeholder="https://... 或上传到图床后粘贴链接"
+              />
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label className="block text-xs text-slate-500 mb-1">联系邮箱（可选，客户可见）</label>
+                <input
+                  type="email"
+                  value={companyEmail}
+                  onChange={(e) => setCompanyEmail(e.target.value)}
+                  className="w-full rounded-none bg-white border border-slate-200 text-slate-900 p-3 py-2.5 text-sm focus:ring-2 focus:ring-emerald-500"
+                  placeholder="sales@company.com"
+                />
+              </div>
+              <div>
+                <label className="block text-xs text-slate-500 mb-1">联系电话（可选，客户可见）</label>
+                <input
+                  type="tel"
+                  value={companyPhone}
+                  onChange={(e) => setCompanyPhone(e.target.value)}
+                  className="w-full rounded-none bg-white border border-slate-200 text-slate-900 p-3 py-2.5 text-sm focus:ring-2 focus:ring-emerald-500"
+                  placeholder="+86 138 0000 0000"
+                />
+              </div>
+            </div>
+            <div>
+              <label className="block text-xs text-slate-500 mb-1">装运港（可选，如 FOB Ningbo）</label>
+              <input
+                type="text"
+                value={portOfLoading}
+                onChange={(e) => setPortOfLoading(e.target.value)}
+                className="w-full rounded-none bg-white border border-slate-200 text-slate-900 p-3 py-2.5 text-sm focus:ring-2 focus:ring-emerald-500"
+                placeholder="e.g. Ningbo, Shanghai"
+              />
+            </div>
+            <div>
+              <label className="block text-xs text-slate-500 mb-1">付款方式（可选）</label>
+              <input
+                type="text"
+                value={paymentTerms}
+                onChange={(e) => setPaymentTerms(e.target.value)}
+                className="w-full rounded-none bg-white border border-slate-200 text-slate-900 p-3 py-2.5 text-sm focus:ring-2 focus:ring-emerald-500"
+                placeholder="e.g. T/T 30% in advance, 70% before shipment"
+              />
+            </div>
+            <div>
+              <label className="block text-xs text-slate-500 mb-1">备注 / 特殊条款（可选）</label>
+              <textarea
+                value={remarks}
+                onChange={(e) => setRemarks(e.target.value)}
+                rows={2}
+                className="w-full rounded-none bg-white border border-slate-200 text-slate-900 p-3 py-2.5 text-sm focus:ring-2 focus:ring-emerald-500 resize-y"
+                placeholder="MOQ、交期、包装要求等"
               />
             </div>
           </div>

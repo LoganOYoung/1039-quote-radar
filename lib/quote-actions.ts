@@ -33,6 +33,16 @@ export type CreateQuoteInput = {
   settlementFactor?: number;
   /** 产品数量（件），不传则按单价报价；传则按整单算总成本后存单价 FOB */
   orderQuantity?: number;
+  /** 装运港（如 FOB Ningbo） */
+  portOfLoading?: string;
+  /** 付款方式（如 T/T 30% advance） */
+  paymentTerms?: string;
+  /** 公司邮箱（联系卖方） */
+  companyEmail?: string;
+  /** 公司电话（联系卖方） */
+  companyPhone?: string;
+  /** 备注/特殊条款 */
+  remarks?: string;
 };
 
 export async function createQuote(input: CreateQuoteInput): Promise<{ shortId: string; error?: string }> {
@@ -76,6 +86,12 @@ export async function createQuote(input: CreateQuoteInput): Promise<{ shortId: s
   if (input.accessControlled === true) row.access_controlled = true;
   if (input.companyName?.trim()) row.company_name = input.companyName.trim();
   if (input.companyLogoUrl?.trim()) row.company_logo_url = input.companyLogoUrl.trim();
+  if (input.orderQuantity != null && input.orderQuantity >= 1) row.order_quantity = input.orderQuantity;
+  if (input.portOfLoading?.trim()) row.port_of_loading = input.portOfLoading.trim();
+  if (input.paymentTerms?.trim()) row.payment_terms = input.paymentTerms.trim();
+  if (input.companyEmail?.trim()) row.company_email = input.companyEmail.trim();
+  if (input.companyPhone?.trim()) row.company_phone = input.companyPhone.trim();
+  if (input.remarks?.trim()) row.remarks = input.remarks.trim();
 
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
   if (!supabaseUrl || supabaseUrl.includes("placeholder")) {

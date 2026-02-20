@@ -18,7 +18,13 @@ CREATE TABLE IF NOT EXISTS quotes (
   company_logo_url TEXT,
   exchange_rate_locked DECIMAL(10, 4),
   rate_updated_at TIMESTAMPTZ,
-  access_controlled BOOLEAN DEFAULT false
+  access_controlled BOOLEAN DEFAULT false,
+  order_quantity INTEGER,
+  port_of_loading TEXT,
+  payment_terms TEXT,
+  company_email TEXT,
+  company_phone TEXT,
+  remarks TEXT
 );
 
 -- 访问日志（情报）
